@@ -30,7 +30,7 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
 
 	nome = models.CharField('nome', max_length=100)
-	# age = models.IntegerField('age')
+	age = models.IntegerField('age')
 	# telephone = models.CharField('telephone', max_length=15)
 	# gender = models.CharField('gender', max_length=9, choices=GENDER_CHOICES, default="M")
 	# schooling = models.CharField('schooling', max_length=1, choices=SCHOOLING_CHOICES, default="0")
@@ -41,7 +41,7 @@ class UserProfile(models.Model):
 
 	# team = models.ForeignKey(MarathonTeam, null=True, blank=True, on_delete=models.SET_NULL)
 
-	# REQUIRED_FIELDS = ['nome', 'schooling']
+	REQUIRED_FIELDS = ['nome']
 
 	def __unicode__(self):
 		return self.user.username
