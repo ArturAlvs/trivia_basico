@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'usuario_perfil',
     'triviamente',
     'regionamento',
+    'value',
+    'mensagens',
+    'stacksup',
 ]
 
 MIDDLEWARE = [

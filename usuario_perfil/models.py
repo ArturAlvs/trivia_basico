@@ -1,6 +1,9 @@
 from django.db import models
 
-from django.contrib.auth.models import User, Regiao, Idioma
+from django.contrib.auth.models import User
+
+from regionamento.models import Regiao, Idioma
+
 
 
 # class MarathonTeam(models.Model):
@@ -31,8 +34,8 @@ class UserProfile(models.Model):
 	# team = models.ForeignKey(MarathonTeam, null=True, blank=True, on_delete=models.SET_NULL)
 
 
-	regioes = models.ManyToManyField(Regiao)
-	idiomas = models.ManyToManyField(Idioma)
+	regioes = models.ManyToManyField(Regiao, blank=False, default=None)
+	idiomas = models.ManyToManyField(Idioma, blank=False, default=None)
 
 
 	REQUIRED_FIELDS = ['nome']

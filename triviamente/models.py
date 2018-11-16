@@ -1,11 +1,26 @@
 from django.db import models
-from django.contrib.auth.models import User, Regiao, Idioma
+from django.contrib.auth.models import User
+from regionamento.models import Regiao, Idioma
+
+
+
+
+
+class Pergunta(models.Model):
+
+	# length maximo, almentar?
+	narrativa = models.CharField('texto', max_length=100)
+
+
+class Resposta(models.Model):
+
+	# length maximo, almentar?
+	narrativa = models.CharField('texto', max_length=100)
 
 
 # narrativa se comporata como uma string que tem um tipo, pergunta ou resposata.
 # um conjunto que existe aqui é o Questao, que é uma narrativa composta de duas narrativas, uma que questiona algo e outra que responde com uma verdade
-
-class NarrativaString(object):
+class NarrativaString(models.Model):
 
 	ESCOLHA_TIPO_NARRATIVA = (
 		("P", "Pergunta"),
@@ -14,13 +29,13 @@ class NarrativaString(object):
 
 	tipo_pergunta_ou_resposta = models.CharField('tipo', max_length=9, choices=ESCOLHA_TIPO_NARRATIVA)
 
-	# length maximo, almentar?
-	narrativa = models.CharField('texto', max_length=100)
+	pergunta = models.ForeignKey(Pergunta, related_name='pergunta', null=True, blank=True, on_delete=models.SET_NULL)
+	resposta = models.ForeignKey(Resposta, related_name='resposta', null=True, blank=True, on_delete=models.SET_NULL)
 
-	user_criador = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+	user_criador = models.ForeignKey(User, related_name='usuario_criador_narrativa', null=True, blank=True, on_delete=models.SET_NULL)
 
 	# quando deletar um idoma, toda narrativa daquele idioma deveria ser deletado?
-	idioma = models.ForeignKey(Idioma, null=False, blank=False, on_delete=models.SET_NULL)
+	idioma = models.ForeignKey(Idioma, null=True, blank=False, on_delete=models.SET_NULL)
 
 
 # Questao generica, para ser usada por cada jogo
@@ -39,23 +54,21 @@ class Questao(models.Model):
 
 	# tem que ter uma pergunta, pois Questao é a sinapse
 	# dependendo do idioma do usuario, tenho que achar a pergunta com o mesmo idioma
-	perguntas = models.ManyToManyField(NarrativaString, null=False, blank=False, on_delete=models.CASCADE)
+	pergunta = models.ForeignKey(Pergunta, null=False, blank=False, on_delete=models.CASCADE)
 
 	# resposta certa é a primeira
 	# dependendo do idioma do usuario, tenho que achar as respostas com o mesmo idioma
-	resp1 = models.ManyToManyField(NarrativaString)
-	resp2 = models.ManyToManyField(NarrativaString)
-	resp3 = models.ManyToManyField(NarrativaString)
-	resp4 = models.ManyToManyField(NarrativaString)
+	resp1 = models.ForeignKey(Resposta, related_name='resposta_1', null=True, blank=False, on_delete=models.SET_NULL)
+	resp2 = models.ForeignKey(Resposta, related_name='resposta_2', null=True, blank=False, on_delete=models.SET_NULL)
+	resp3 = models.ForeignKey(Resposta, related_name='resposta_3', null=True, blank=False, on_delete=models.SET_NULL)
+	resp4 = models.ForeignKey(Resposta, related_name='resposta_4', null=True, blank=False, on_delete=models.SET_NULL)
 
 
 	# regiao pai
 	regiao = models.ForeignKey(Regiao, null=True, blank=True, on_delete=models.SET_NULL)
 
-
-	# se questao esta em processo de publicacao
-	questao = models.OneToOneField(Questao, on_delete=models.CASCADE, primary_key=False, null=True)
-
+	# quando foi criada
+	date = models.DateTimeField('data_criacao', auto_now_add=True, blank=True)
 
 
 
@@ -86,11 +99,19 @@ class PrototipoQuestao(models.Model):
 	
 	ESCOLHA_PROTOTIPO_QUESTAO = (
 		("0", "Ruim"),
-		("1", "Divertida"),
+		("1", "Neutra"),
 		("2", "Boa"),
 	)
 
-	questao = models.OneToOneField(Questao, on_delete=models.CASCADE, primary_key=True)
+	questao = models.OneToOneField(Questao, on_delete=models.CASCADE, primary_key=True, null=False)
+
+	user_criador = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+
+	escolha_usuario = models.CharField('reclamacao', max_length=10, choices=ESCOLHA_PROTOTIPO_QUESTAO)
+
+	date = models.DateTimeField('data_criacao', auto_now_add=True, blank=True)
+
+
 
 
 
@@ -103,12 +124,15 @@ class OpiniaoQuestao(models.Model):
 
 
 	# tem que ser models.CASCADE se quando a questao for deletada, o log de reclamacao de questao do user tambem é
-	questao = models.ForeignKey(Questao, null=True, blank=True, on_delete=models.SET_NULL)
+	questao = models.ForeignKey(Questao, null=True, blank=False, on_delete=models.SET_NULL)
 
-	user_criador = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+	user_criador = models.ForeignKey(User, null=True, blank=False, on_delete=models.SET_NULL)
 
 	# o que o jogador escolheu
-	escolha_usuario = models.CharField('reclamacao', choices=ESCOLHA_RECLAMACAO_QUESTAO)
+	escolha_usuario = models.CharField('reclamacao', max_length=10, choices=ESCOLHA_RECLAMACAO_QUESTAO)
+
+	date = models.DateTimeField('data_criacao_opiniao', auto_now_add=True, blank=True)
+
 
 
 class OpiniaoPergunta(models.Model):
@@ -120,12 +144,15 @@ class OpiniaoPergunta(models.Model):
 
 
 	# tem que ser models.CASCADE se quando a pergunta for deletada, o log de reclamacao de pergunta do user tambem é
-	pergunta = models.ForeignKey(NarrativaString, null=False, blank=False, on_delete=models.SET_NULL)
+	pergunta = models.ForeignKey(Pergunta, null=True, blank=False, on_delete=models.SET_NULL)
 
-	user_criador = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+	user_criador = models.ForeignKey(User, null=True, blank=False, on_delete=models.SET_NULL)
 
 	# o que o jogador escolheu
-	escolha_usuario = models.CharField('reclamacao', choices=ESCOLHA_RECLAMACAO_PERGUNTA)
+	escolha_usuario = models.CharField('reclamacao', max_length=10, choices=ESCOLHA_RECLAMACAO_PERGUNTA)
+
+	date = models.DateTimeField('data_criacao_opiniao', auto_now_add=True, blank=True)
+
 
 
 class OpiniaoResposta(models.Model):
@@ -137,11 +164,15 @@ class OpiniaoResposta(models.Model):
 
 
 	# tem que ser models.CASCADE se quando a pergunta for deletada, o log de reclamacao de pergunta do user tambem é
-	resposta = models.ForeignKey(NarrativaString, null=False, blank=False, on_delete=models.SET_NULL)
+	resposta = models.ForeignKey(Resposta, null=True, blank=False, on_delete=models.SET_NULL)
 
-	user_criador = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+	user_criador = models.ForeignKey(User, null=True, blank=False, on_delete=models.SET_NULL)
 
 	# o que o jogador escolheu
-	escolha_usuario = models.CharField('reclamacao', choices=ESCOLHA_RECLAMACAO_RESPOSTA)
+	escolha_usuario = models.CharField('reclamacao', max_length=10, choices=ESCOLHA_RECLAMACAO_RESPOSTA)
+
+
+	date = models.DateTimeField('data_criacao_opiniao', auto_now_add=True, blank=True)
+
 
 
