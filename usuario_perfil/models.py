@@ -19,26 +19,20 @@ class UserProfile(models.Model):
 		("F", "Feminino"),
 	)
 
-	user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+	user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
 
 	nome = models.CharField('nome', max_length=100)
 	age = models.IntegerField('age')
-	# telephone = models.CharField('telephone', max_length=15)
 	gender = models.CharField('gender', max_length=9, choices=GENDER_CHOICES, default="M")
-	# schooling = models.CharField('schooling', max_length=1, choices=SCHOOLING_CHOICES, default="0")
-	# course = models.CharField('course', max_length=50)
-	# institution = models.CharField('institution', max_length=50)
-	# period = models.CharField('period', max_length=20)
-	# payed = models.BooleanField('payed', default=False)
 
-	# team = models.ForeignKey(MarathonTeam, null=True, blank=True, on_delete=models.SET_NULL)
-
-
-	regioes = models.ManyToManyField(Regiao, blank=False, default=None)
-	idiomas = models.ManyToManyField(Idioma, blank=False, default=None)
+	regioes = models.ManyToManyField(Regiao, blank=True, default=None)
+	idiomas = models.ManyToManyField(Idioma, blank=True, default=None)
 
 
 	REQUIRED_FIELDS = ['nome']
+
+	def __str__(self):
+		return self.nome + " ; " + self.user.email
 
 	# def __unicode__(self):
 	# 	return self.user.username

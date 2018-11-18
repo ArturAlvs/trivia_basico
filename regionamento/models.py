@@ -5,12 +5,18 @@ from django.contrib.auth.models import User
 
 class Idioma(models.Model):
 	nome = models.CharField('nome', max_length=100)
+
+
+	def __str__(self):
+		return self.nome
 	
 
 class Regiao(models.Model):
 
 	nome = models.CharField('nome', max_length=100)
 	
+	def __str__(self):
+		return self.nome
 
 
 class ConexaoRegiao(models.Model):
@@ -21,6 +27,8 @@ class ConexaoRegiao(models.Model):
 	reg1 = models.ForeignKey(Regiao, related_name='regiao_pai', null=False, blank=False, on_delete=models.CASCADE)
 	reg2 = models.ForeignKey(Regiao, related_name='regiao_filho', null=False, blank=False, on_delete=models.CASCADE)
 
+	def __str__(self):
+		return str(self.nome + " ; " + reg1.nome + " ; " + reg2.nome)
 	
 class OpiniaoRegiao(models.Model):
 	ESCOLHA_OPINIAO_REGIAO = (

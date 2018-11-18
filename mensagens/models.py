@@ -22,7 +22,7 @@ class MSG_SYST(models.Model):
 	gender = models.CharField('gender', max_length=9, choices=TIPOS_MENSAGENS, default="A")
 
 	user = models.ManyToManyField(User, blank=True, default=None)
-	texto = models.CharField('nome', max_length=500)
+	texto = models.CharField('nome', max_length=500, default='')
 	
 
 	date = models.DateTimeField('data_criacao_mensagem', auto_now_add=True, blank=True)

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'usuario_perfil',
     'triviamente',
     'regionamento',
@@ -60,7 +61,7 @@ ROOT_URLCONF = 'trivia.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['./templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,3 +125,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
+AUTH_PROFILE_MODULE = 'user_profile.UserProfile'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = ' '
+# EMAIL_HOST_PASSWORD = ' '
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = ' '
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES' : ('rest_framework.permissions.IsAuthenticated',)
+}
+
+
+
+
+
+
+
+

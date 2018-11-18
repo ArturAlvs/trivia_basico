@@ -16,6 +16,9 @@ class Carta(models.Model):
 		("M", "Moedas"),
 	)
 
+	boost = models.CharField('boost_carta', max_length=10, choices=ESCOLHA_BOOST_CARTA, default='P')
+
+
 	quantidade = models.IntegerField('quantidade')
 
 	nome = models.CharField('nome', max_length=100)

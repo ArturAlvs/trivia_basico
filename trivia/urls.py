@@ -14,8 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf.urls import url
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+from usuario_perfil.views import Login, Register
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('stacksup', include('stacksup.urls')),
+    path('', include('triviamente.urls')),
+
+    url(r'^login/$', Login.as_view()),
+    url(r'^signup/$', Register.as_view()),
+
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
