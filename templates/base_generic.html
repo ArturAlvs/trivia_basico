@@ -2,52 +2,53 @@
 <html lang="en">
     <head>
         {% load staticfiles %}
+        {% load static %}
         <meta charset="utf-8">
         <title>Triviando</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'bootstrap-4/css/bootstrap.css' %}" rel="stylesheet">
         <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
     </head>
     <body>
 
 
-        <nav class="navbar navbar-fixed-top navbar-solid">
 
- <a class="navbar-brand" href="#">{{ usuario }}</a>
-            <div class="container">
-               
-
-                <div class="collapse navbar-collapse" id="navbar-items">
-                    <ul class="nav navbar-nav navbar-right">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="#">Triviamente Triviado</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
 
                         {% if user.is_authenticated %}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle " data-toggle="dropdown" aria-expanded="false">{{ user.profile.getFirstName }}<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/register/">Perfil</a></li>
-                                    <li><a href="/marathon/">Maratona</a></li>
-                                    <li><a href="/certificates/">Certificados</a></li>
-                                    {% if request.user.is_superuser %}
-                                        <li><a href="/payment/">Pagamentos</a></li>
-                                        <li><a href="/lists/">Listas</a></li>
-                                    {% endif %}
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="/logout/">Sair</a></li>
-                                </ul>
-                            </li>
+                            <!-- pagina do perfil -->
+                            <li class="nav-item"><a class="nav-link" href="/#/">{{ user.user.nome }} </a></li>
+
+                            {% if request.user.is_superuser %}
+                                <li class="nav-item"><a class="nav-link" href="/admin/">ADMIN</a></li>
+                            {% endif %}
+                            <li role="separator" class="divider nav-item" ></li>
+                            <li class="nav-item"><a class="nav-link" href="/logout/">Sair</a></li>
+                                
+
+                           
                         {% else %}
                             <li class="nav-item"><a class="nav-link" href="/login/">Login</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/signup/">Signup</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/signup/">Cadastro</a></li>
                         {% endif %}
 
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
-        
+            </ul>
+
+            <form class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+          </div>
+        </nav>
 
 
         <div class="container">
@@ -70,5 +71,10 @@
         
 
     </body>
-    <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4/js/bootstrap.js' %}"></script>
 </html>
+
+
+
+
+

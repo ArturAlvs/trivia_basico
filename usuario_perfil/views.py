@@ -12,6 +12,10 @@ class Login(View):
 
 	def get(self, request):
 
+		if request.user.is_authenticated:
+			return HttpResponseRedirect("/")
+
+
 		return render(
 		request,
 		'login.html',
@@ -98,7 +102,7 @@ class Register(View):
 					profile.gender = gender
 
 					profile.save()
-					
+
 
 					profile.regioes.add(regiaoObj)
 
