@@ -21,14 +21,14 @@ class Regiao(models.Model):
 
 class ConexaoRegiao(models.Model):
 
-	nome = models.CharField('nome', max_length=100)
+	nome = models.CharField('nome', max_length=100, default="Reg")
 
 	# reg1 é pai de reg2
 	reg1 = models.ForeignKey(Regiao, related_name='regiao_pai', null=False, blank=False, on_delete=models.CASCADE)
 	reg2 = models.ForeignKey(Regiao, related_name='regiao_filho', null=False, blank=False, on_delete=models.CASCADE)
 
 	def __str__(self):
-		return str(self.nome + " ; " + reg1.nome + " ; " + reg2.nome)
+		return str(self.nome + " ; " + self.reg1.nome + " ; " + self.reg2.nome)
 	
 class OpiniaoRegiao(models.Model):
 	ESCOLHA_OPINIAO_REGIAO = (

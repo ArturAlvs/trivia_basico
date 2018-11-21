@@ -24,8 +24,8 @@ from usuario_perfil.views import Logout, Login, Register
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('stacksup', include('stacksup.urls')),
-    path('', include('triviamente.urls')),
+    # path('stacksup', include('stacksup.urls')),
+    path('', include('stacksup.urls')),
 
     # contato
     path('contato/', include('mensagens.urls')),

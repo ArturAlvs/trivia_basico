@@ -5,7 +5,7 @@ from .models import UserProfile
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserRegistrationForm
-from regionamento.models import Regiao
+from regionamento.models import Regiao, Idioma
 from value.models import Carteira, Album
 
 
@@ -53,11 +53,12 @@ class Register(View):
 	def get(self, request):
 
 		regioes = Regiao.objects.all()
+		idiomas = Idioma.objects.all()
 
 		return render(
 			request,
 			'register.html',
-			context={'regioes': regioes},
+			context={'regioes': regioes, 'idiomas': idiomas},
 		)
 
 	def post(self, request):
@@ -77,7 +78,12 @@ class Register(View):
 			# vem uma regiao só
 			regiao = request.POST['regiao']
 
+			idioma = request.POST['idioma']
+
+
 			regiaoObj = Regiao.objects.filter(nome=regiao).first()
+
+			idiomaObj = Idioma.objects.filter(nome=idioma).first()
 
 			if username == '':
 				username = email.split('@')[0]
@@ -103,6 +109,7 @@ class Register(View):
 					profile.gender = gender
 					profile.save()
 					profile.regioes.add(regiaoObj)
+					profile.idiomas.add(idiomaObj)
 
 					# carteira
 					carteira = Carteira(user=user)

@@ -13,7 +13,4 @@ urlpatterns = [
 
 	path('', views.Index.as_view())
 
-
-
-
 ]

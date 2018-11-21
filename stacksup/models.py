@@ -21,8 +21,6 @@ class SUQuestionLog(models.Model):
 	# qual foi a resposta
 	resposta = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
-	# o que ele ganhou
-	carteira = models.ForeignKey(Carteira, null=True, blank=True, on_delete=models.SET_NULL)
 
 	# quando respondeu
 	data_resposta = models.DateTimeField('data_resposta', blank=True)
@@ -31,24 +29,23 @@ class SUQuestionLog(models.Model):
 		return self.questao.pergunta.narrativa
 
 
-
 class Partida(models.Model):
 
 	# adicionar mais
-	CUSTO_ZERO = 1
-	CUSTO_PEQUENO = 2
-	CUSTO_MEDIO = 3
-	CUSTO_GRANDE = 4
-	CUSTO_ENORME = 5
-	CUSTO_ABSURDO = 6
-	ESCOLHA_CUSTO_PARTIDA = (
-		(CUSTO_ZERO, "CUSTO_ZERO"),
-		(CUSTO_PEQUENO, "CUSTO_PEQUENO"),
-		(CUSTO_MEDIO, "CUSTO_MEDIO"),
-		(CUSTO_GRANDE, "CUSTO_GRANDE"),
-		(CUSTO_ENORME, "CUSTO_ENORME"),
-		(CUSTO_ABSURDO, "CUSTO_ABSURDO"),
-	)
+	# CUSTO_ZERO = 1
+	# CUSTO_PEQUENO = 2
+	# CUSTO_MEDIO = 3
+	# CUSTO_GRANDE = 4
+	# CUSTO_ENORME = 5
+	# CUSTO_ABSURDO = 6
+	# ESCOLHA_CUSTO_PARTIDA = (
+	# 	(CUSTO_ZERO, "CUSTO_ZERO"),
+	# 	(CUSTO_PEQUENO, "CUSTO_PEQUENO"),
+	# 	(CUSTO_MEDIO, "CUSTO_MEDIO"),
+	# 	(CUSTO_GRANDE, "CUSTO_GRANDE"),
+	# 	(CUSTO_ENORME, "CUSTO_ENORME"),
+	# 	(CUSTO_ABSURDO, "CUSTO_ABSURDO"),
+	# )
 
 	usuario = models.OneToOneField(User, related_name='usuario_partida', on_delete=models.CASCADE)
 
@@ -82,6 +79,6 @@ class Partida(models.Model):
 
 
 	# custo para jogar
-	custo = models.IntegerField('custo', choices=ESCOLHA_CUSTO_PARTIDA, default=CUSTO_PEQUENO)
+	custo = models.IntegerField('custo', default=2)
 
 

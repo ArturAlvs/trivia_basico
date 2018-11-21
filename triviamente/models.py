@@ -21,8 +21,14 @@ class Pergunta(models.Model):
 
 
 	def __str__(self):
-		narra = NarrativaString.objects.filter(pergunta=self)
-		return narra.first().narrativa
+
+		try:
+			narra = NarrativaString.objects.filter(pergunta=self).first().narrativa
+			
+		except Exception as e:
+			narra = "Pergunta sem narrativa"
+
+		return narra
 
 
 
@@ -40,8 +46,13 @@ class Resposta(models.Model):
 	referencias = models.ManyToManyField(Referencia, blank=True, default=None)
 
 	def __str__(self):
-		narra = NarrativaString.objects.filter(resposta=self)
-		return narra.first().narrativa
+		try:
+			narra = NarrativaString.objects.filter(resposta=self).first().narrativa
+			
+		except Exception as e:
+			narra = "Resposta sem narrativa"
+
+		return narra
 
 
 
@@ -102,8 +113,15 @@ class Questao(models.Model):
 
 
 	def __str__(self):
-		texto = NarrativaString.objects.filter(pergunta = self.pergunta)
-		return texto.first().narrativa
+
+		try:
+			narra = NarrativaString.objects.filter(pergunta = self.pergunta).first().narrativa
+			
+		except Exception as e:
+			narra = "questao sem narrativa"
+
+
+		return narra
 
 
 	# REQUIRED_FIELDS = ['nome']

@@ -28,7 +28,7 @@
                 <p class="error-message">{{ error }}</p>
             {% endif %}
             <form {% if user.is_authenticated %}
-                action="/register/"
+                action="/login/"
             {% else %}
                 action="/signup/"
             {% endif %}
@@ -63,10 +63,29 @@
                             </select>
                         </div>
 
+
+                        <!-- Idiomas -->
+                        {% if idiomas %}
+                             <div class="form-group">
+                                <select class="form-control" id="idioma" name="idioma" required>
+                                    <option value="" disabled selected>Idiomas</option>
+                                    
+
+                                    {% for idioma in idiomas %}
+
+                                    <option value="{{idioma}}">{{ idioma }}</option>
+                                    
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+
+                        {% endif %}
+
                         <!-- Regioes -->
                         {% if regioes %}
 	                         <div class="form-group">
-	                            <select class="form-control" id="gender" name="regiao" required>
+	                            <select class="form-control" id="regiao" name="regiao" required>
 	                                <option value="" disabled selected>Regioes</option>
 	                                
 
