@@ -30,12 +30,15 @@ class Album(models.Model):
 
 	cartas = models.ManyToManyField(Carta, blank=True, default=None)
 
+	def __str__(self):
+		return self.user.username
+
 	
 class Carteira(models.Model):
 
 	# quando a carteira contem de cada
-	pontos = models.IntegerField('pontos')
-	moedas = models.IntegerField('moedas')
+	pontos = models.IntegerField('pontos', default=0)
+	moedas = models.IntegerField('moedas', default=1000)
 
 	cartas = models.ManyToManyField(Carta, blank=True, default=None)
 
@@ -47,8 +50,10 @@ class Carteira(models.Model):
 	# 	usuario_90312
 	# 	carteira_padrao_tipo_jogo_1
 	# 	carteira_compra_1453
-	comentario = models.CharField('comentario', max_length=100)
+	comentario = models.CharField('comentario', max_length=100, default="carteira_usuario")
 
+	def __str__(self):
+		return self.user.username
 
 class Compra(models.Model):
 

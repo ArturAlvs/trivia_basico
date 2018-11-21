@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserRegistrationForm
 from regionamento.models import Regiao
+from value.models import Carteira, Album
 
 
 class Login(View):
@@ -95,16 +96,20 @@ class Register(View):
 					user = User.objects.create_user(username=username, email=email, password=password)
 					user.save()
 
+					# profile
 					profile = UserProfile(user=user)
-
 					profile.nome = username
 					profile.age = int(age)
 					profile.gender = gender
-
 					profile.save()
-
-
 					profile.regioes.add(regiaoObj)
+
+					# carteira
+					carteira = Carteira(user=user)
+					carteira.save()
+
+					album = Album(user=user)
+					album.save()
 
 
 					login(request, user)

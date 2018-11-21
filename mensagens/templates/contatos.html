@@ -1,0 +1,50 @@
+{% extends "base_generic.html" %}
+
+
+{% block content %}
+
+    	<br/><br/>
+        Entre em contato conosco
+    	<br/><br/>
+
+
+	<form>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Email address</label>
+    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlSelect1">Selecione o motivo</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+        
+        <option>
+            Oi
+        </option>
+        <option>
+            Reclamação
+        </option>
+        <option>
+            Outros
+        </option>
+    
+    </select>
+    </div>
+    <div class="form-group">
+    <label for="exampleFormControlTextarea1">Digite sobre o seu contato</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary mb-2">
+        Entrar em contato
+    </button>
+
+</form>
+
+
+<br/><br/>
+
+<span>
+    asdsad@email.com
+</span>
+
+{% endblock %}

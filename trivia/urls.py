@@ -27,6 +27,9 @@ urlpatterns = [
     path('stacksup', include('stacksup.urls')),
     path('', include('triviamente.urls')),
 
+    # contato
+    path('contato/', include('mensagens.urls')),
+
     url(r'^login/$', Login.as_view()),
     url(r'^logout/$', Logout.as_view()),
     url(r'^signup/$', Register.as_view()),

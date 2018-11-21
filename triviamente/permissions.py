@@ -14,7 +14,10 @@ class IsAllowedToWriteIfOwnAndReadIfLogged(BasePermission):
 
 	def has_permission(self, request, view):
 
-		if (request.user and request.user.is_authenticated ):
+		SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
+
+
+		if (request.method in SAFE_METHODS and request.user and request.user.is_authenticated ):
 			return True
 
 		return False

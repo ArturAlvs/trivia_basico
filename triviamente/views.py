@@ -8,6 +8,7 @@ from .serializers import ReferenciaSerializer, PerguntaSerializer, RespostaSeria
 from .permissions import IsAllowedToWriteIfOwnAndReadIfLogged
 
 from usuario_perfil.models import UserProfile
+from value.models import Carteira
 
 class NarrativaView(viewsets.ModelViewSet):
 
@@ -27,10 +28,19 @@ class Index(View):
 
 		if request.user.is_authenticated:
 			user = UserProfile.objects.filter(nome=request.user) 
+
+			carteira = Carteira.objects.filter(user=request.user).first()
+
+
+
+			user = user.first()
+
 		else:
 			user = None
+			carteira = None
 
 		values['usuario'] = user
+		values['carteira'] = carteira
 
 		return render(
 		request,
