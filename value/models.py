@@ -43,7 +43,7 @@ class Carteira(models.Model):
 	cartas = models.ManyToManyField(Carta, blank=True, default=None)
 
 	# usuario dono da carteira
-	user = models.OneToOneField(User, related_name='usuario_carteira', on_delete=models.CASCADE, null=True)
+	user = models.OneToOneField(User, related_name='usuario_carteira', on_delete=models.CASCADE, null=True, blank=True)
 
 	# para lembrar que carteira é essa:
 	# exemplos:
@@ -53,7 +53,7 @@ class Carteira(models.Model):
 	comentario = models.CharField('comentario', max_length=100, default="carteira_usuario")
 
 	def __str__(self):
-		return self.user.username
+		return self.comentario
 
 class Compra(models.Model):
 
@@ -61,4 +61,7 @@ class Compra(models.Model):
 	user = models.OneToOneField(User, related_name='usuario_compra', on_delete=models.CASCADE, null=False)
 
 	usado = models.BooleanField('usado', default=False)
+
+	def __str__(self):
+		return self.user
 
