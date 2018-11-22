@@ -278,7 +278,7 @@ class FabricaView(View):
 
 			regiao_da_questao = request.POST.get('regiaoFormControlSelectQuestao', False)
 
-			regiao_pergunta = Regiao.objects.filter(name=regiao_da_questao).first()
+			regiao_pergunta = Regiao.objects.filter(nome=regiao_da_questao).first()
 
 
 			textoRespostaErrada1 = request.POST.get('textoRespostaErrada1', False)

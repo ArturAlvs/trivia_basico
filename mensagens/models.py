@@ -22,7 +22,7 @@ class MSG_SYST(models.Model):
 	tipo_mensagem = models.CharField('tipo_mensagem', max_length=9, choices=TIPOS_MENSAGENS, default="A")
 
 	user = models.ManyToManyField(User, blank=True, default=None)
-	texto = models.CharField('nome', max_length=500, default='')
+	texto = models.CharField('texto', max_length=500, default='')
 	
 
 	date = models.DateTimeField('data_criacao_mensagem', auto_now_add=True, blank=True)
@@ -43,7 +43,7 @@ class MSG_PARA_SYST(models.Model):
 	tipo_mensagem = models.CharField('tipo_mensagem', max_length=9, choices=TIPOS_MENSAGENS, default="S")
 
 	user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-	texto = models.CharField('nome', max_length=500, default='')
+	texto = models.CharField('texto', max_length=500, default='')
 	
 
 	date = models.DateTimeField('data_criacao_mensagem', auto_now_add=True, blank=True)
