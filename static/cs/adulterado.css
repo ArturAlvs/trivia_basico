@@ -1,0 +1,20 @@
+.bg-dark{
+
+	background-color: #651c82 !important;
+	border-color: #651c82 !important;
+	color: white;
+
+}
+
+.bg-info{
+	background-color: #ff9f1a !important;
+	border-color: #cc7700 !important;
+	color: white;
+}
+
+
+.list-group-item-info{
+	background-color: #ff9f1a !important;
+/*	border-color: #cc7700 !important;*/
+	color: white;
+}

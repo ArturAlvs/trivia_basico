@@ -7,7 +7,7 @@ from value.models import Carteira
 from triviamente.models import Questao, NarrativaString, Pergunta, Resposta, Referencia
 
 
-from regionamento.models import Regiao, Idioma
+from regionamento.models import Regiao, Idioma, ConexaoRegiao
 
 from django.http import HttpResponseRedirect
 
@@ -189,7 +189,7 @@ class FabricaView(View):
 
 			carteira = Carteira.objects.filter(user=request.user).first()
 
-			questoes = Questao.objects.filter(user_criador=request.user)
+			questoes = Questao.objects.filter(user_criador=request.user).order_by('-date')
 
 			try:
 
@@ -211,8 +211,10 @@ class FabricaView(View):
 							if referencia.pergunta == questao.pergunta:
 								correta = NarrativaString.objects.filter(resposta=resposta).first()
 								
+					categoria = questao.pergunta.tipo_pergunta_ou_resposta
+					data_criacao = questao.date
 
-					qs.append( (pergunta, respostas, correta) )
+					qs.append( (pergunta, respostas, correta, categoria, data_criacao) )
 
 
 
@@ -258,64 +260,132 @@ class FabricaView(View):
 
 	def post(self, request):
 
+
+		# dados do user
 		user = UserProfile.objects.filter(nome=request.user).first()
 		
 		idioma = user.idiomas.all().first()
 		reg = user.regioes.all().first()
 
+		# dados das questoes
 		textoPerguntaQuestao = request.POST.get('textoPerguntaQuestao', False)
 		textoRespostaCorreta = request.POST.get('textoRespostaCorreta', False)
-		textoRespostaErrada1 = request.POST.get('textoRespostaErrada1', False)
-		textoRespostaErrada2 = request.POST.get('textoRespostaErrada2', False)
-		textoRespostaErrada3 = request.POST.get('textoRespostaErrada3', False)
+	
+		# dados da regiao
+		nomeDaRegiao = request.POST.get('nomeDaRegiao', False)
 
-		if textoPerguntaQuestao == False or textoRespostaCorreta == False:
-			return HttpResponseRedirect("/fabrica")
 
 		# receber o tipo do usuario
-		try:
-			pergunta = Pergunta(tipo_pergunta_ou_resposta=0)
-			pergunta.save()
+		if textoPerguntaQuestao != False and textoRespostaCorreta != False:
 
-			refe = Referencia(pergunta=pergunta, texto=request.user)
-			refe.save()
+			textoRespostaErrada1 = request.POST.get('textoRespostaErrada1', False)
+			textoRespostaErrada2 = request.POST.get('textoRespostaErrada2', False)
+			textoRespostaErrada3 = request.POST.get('textoRespostaErrada3', False)
 
-			respostaCorreta = Resposta()
-			respostaCorreta.save()
-			respostaCorreta.referencias.add(refe)
+			categoria = request.POST.get('categoriaFormControlSelect', False)
 
-			respostaErrada1 = Resposta()
-			respostaErrada1.save()
+			try:
 
-			respostaErrada2 = Resposta()
-			respostaErrada2.save()
+				pergunta = None
+				if categoria == "Artes":
+					pergunta = Pergunta(tipo_pergunta_ou_resposta=0)
+					pergunta.save()	
+									
+				elif categoria == "Ciencias":
+					pergunta = Pergunta(tipo_pergunta_ou_resposta=1)
+					pergunta.save()
+					
+				elif categoria == "Cotidiano":
 
-			respostaErrada3 = Resposta()
-			respostaErrada3.save()
+					pergunta = Pergunta(tipo_pergunta_ou_resposta=2)
+					pergunta.save()
+					
+				elif categoria == "Esportes":
 
-			narrativaPergunta = NarrativaString(tipo_pergunta_ou_resposta="P", idioma=idioma, user_criador=request.user, narrativa=textoPerguntaQuestao, pergunta=pergunta)
-			narrativaPergunta.save()
+					pergunta = Pergunta(tipo_pergunta_ou_resposta=3)
+					pergunta.save()
+					
+				elif categoria == "Geografia":
+					pergunta = Pergunta(tipo_pergunta_ou_resposta=4)
+					pergunta.save()
+					
+				elif categoria == "Historia":
+					pergunta = Pergunta(tipo_pergunta_ou_resposta=5)
+					pergunta.save()
+					
 
-			narrativaRespostaCorreta = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaCorreta, resposta=respostaCorreta)
-			narrativaRespostaCorreta.save()
-			narrativaRespostaErrada1 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada1, resposta=respostaErrada1)
-			narrativaRespostaErrada1.save()
-			narrativaRespostaErrada2 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada2, resposta=respostaErrada2)
-			narrativaRespostaErrada2.save()
-			narrativaRespostaErrada3 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada3, resposta=respostaErrada3)
-			narrativaRespostaErrada3.save()
+	# ("0", "Artes"),
+	# 		("1", "Ciencias"),
+	# 		("2", "Cotidiano"),
+	# 		("3", "Esportes"),
+	# 		("4", "Geografia"),
+	# 		("5", "Historia"),
 
 
-			questao = Questao(user_criador=request.user, pergunta=pergunta, regiao=reg)
-			questao.save()
-			questao.respostas.add(respostaCorreta)
-			questao.respostas.add(respostaErrada1)
-			questao.respostas.add(respostaErrada2)
-			questao.respostas.add(respostaErrada3)
+				refe = Referencia(pergunta=pergunta, texto=request.user)
+				refe.save()
 
-		except Exception as e:
-			raise
+				respostaCorreta = Resposta()
+				respostaCorreta.save()
+				respostaCorreta.referencias.add(refe)
 
+				respostaErrada1 = Resposta()
+				respostaErrada1.save()
+
+				respostaErrada2 = Resposta()
+				respostaErrada2.save()
+
+				respostaErrada3 = Resposta()
+				respostaErrada3.save()
+
+				narrativaPergunta = NarrativaString(tipo_pergunta_ou_resposta="P", idioma=idioma, user_criador=request.user, narrativa=textoPerguntaQuestao, pergunta=pergunta)
+				narrativaPergunta.save()
+
+				narrativaRespostaCorreta = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaCorreta, resposta=respostaCorreta)
+				narrativaRespostaCorreta.save()
+				narrativaRespostaErrada1 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada1, resposta=respostaErrada1)
+				narrativaRespostaErrada1.save()
+				narrativaRespostaErrada2 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada2, resposta=respostaErrada2)
+				narrativaRespostaErrada2.save()
+				narrativaRespostaErrada3 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada3, resposta=respostaErrada3)
+				narrativaRespostaErrada3.save()
+
+
+				questao = Questao(user_criador=request.user, pergunta=pergunta, regiao=reg)
+				questao.save()
+				questao.respostas.add(respostaCorreta)
+				questao.respostas.add(respostaErrada1)
+				questao.respostas.add(respostaErrada2)
+				questao.respostas.add(respostaErrada3)
+
+			except Exception as e:
+				raise
+
+
+		elif nomeDaRegiao != False:
+
+			print("ASDSADASDAS------------")
+			print("ASDSADASDAS------------")
+			print("ASDSADASDAS------------")
+
+			regiao_pai_nome = request.POST.get('regiaoFormControlSelect', False)
+			
+			try:
+				regiao = Regiao(nome=nomeDaRegiao)
+
+				regiao_pai = Regiao.objects.filter(nome=regiao_pai_nome).first()
+
+				regiao.save()
+				criado_por = "Criado por: " + str(request.user)
+				conexao = ConexaoRegiao(nome=criado_por, reg1=regiao_pai ,reg2=regiao)
+
+				conexao.save()
+			
+			except Exception as e:
+				raise
+
+		else:
+			return HttpResponseRedirect("/fabrica")
 
 
 		return render(

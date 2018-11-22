@@ -42,12 +42,31 @@
   	<br/>
 
   	<!-- form enviar questao -->
+  	<!-- --------------  -->
 
   	<form action="/fabrica/" method="post" class="form-inline">
     {% csrf_token %}
 	<div class="card">
 		<div class="card-body">
-			<h5 class="card-title">Card title</h5>
+			<h5 class="card-title">
+
+				<div class="form-group">
+    <select class="form-control" id="categoriaFormControlSelect" name="categoriaFormControlSelect">
+      <option value="Artes">Artes</option>
+      <option value="Ciencias">Ciencias</option>
+      <option value="Cotidiano">Cotidiano</option>
+      <option value="Esportes">Esportes</option>
+      <option value="Geografia">Geografia</option>
+      <option value="Historia">Historia</option>
+    </select>
+  </div>
+<!-- ("0", "Artes"),
+		("1", "Ciencias"),
+		("2", "Cotidiano"),
+		("3", "Esportes"),
+		("4", "Geografia"),
+		("5", "Historia"), -->
+			</h5>
 
 			
 		<input type="text" class="form-control card-text" name="textoPerguntaQuestao" id="textoPerguntaQuestao" placeholder="Pergunta da Questão">
@@ -79,20 +98,56 @@
 
 	<br/>
 
+	<hr/>
+	Questões criadas pelo usuario:
+
+	<br/>
+	<br/>
+
+
 	{% if  questoes %}
 
 		{% for questao in questoes %}
 
 
-			<div class="card">
+		<!-- ("0", "Artes"),
+		("1", "Ciencias"),
+		("2", "Cotidiano"),
+		("3", "Esportes"),
+		("4", "Geografia"),
+		("5", "Historia"), -->
+
+			<div class="card
+
+				{% if questao.3 == '0' %}
+					bg-primary
+
+				{% elif questao.3 == '1' %}
+					bg-success
+				{% elif questao.3 == '2' %}
+					bg-danger
+				{% elif questao.3 == '3' %}
+					bg-warning
+
+				{% elif questao.3 == '4' %}
+					bg-info
+
+				{% elif questao.3 == '5' %}
+					bg-dark
+
+
+				{% endif %}
+
+			">
 
 
 
 				<div class="card-body">
 
-				{{ questao.0 }}
+				{{ questao.0 }} 
+				<br/>
+				<br/>
 
-				</div>
 				<ul class="list-group list-group-flush">
 
 				{% for resposta in questao.1 %}
@@ -100,7 +155,25 @@
 
 					{% if resposta == questao.2 %}
 
-					<li class="list-group-item d-flex justify-content-between align-items-center">
+					<li class="list-group-item d-flex justify-content-between align-items-center
+
+					
+					{% if questao.3 == '0' %}
+						list-group-item-primary
+					{% elif questao.3 == '1' %}
+						list-group-item-success
+					{% elif questao.3 == '2' %}
+						list-group-item-danger
+					{% elif questao.3 == '3' %}
+						list-group-item-warning
+					{% elif questao.3 == '4' %}
+						list-group-item-info
+					{% elif questao.3 == '5' %}
+						list-group-item-dark
+
+					{% endif %}
+
+					">
 						{{ resposta }}
 
 						<span class="badge badge-primary badge-pill">Correta</span>
@@ -110,7 +183,24 @@
 
 					{% else %}
 
-					<li class="list-group-item">
+					<li class="list-group-item
+
+					{% if questao.3 == '0' %}
+						list-group-item-primary
+					{% elif questao.3 == '1' %}
+						list-group-item-success
+					{% elif questao.3 == '2' %}
+						list-group-item-danger
+					{% elif questao.3 == '3' %}
+						list-group-item-warning
+					{% elif questao.3 == '4' %}
+						list-group-item-info
+					{% elif questao.3 == '5' %}
+						list-group-item-dark
+
+					{% endif %}
+
+					">
 						{{ resposta }}
 					</li>
 
@@ -120,17 +210,23 @@
 
 				</ul>
 
+				</div>
+				
+
 				<div class="card-body">
 					
-					Criada em ...
+					Criada em {{ questao.4 }}
 
 				</div>
 
 
 			</div>
 
+	<br/>
 
 		{% endfor %}
+
+
 
 	{% endif %}
 
@@ -138,30 +234,46 @@
 	<br/>
 
 </div>
+
+ <!-- form enviar regiao -->
+ <!-- ===================== -->
+
   <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 
   	<br/>
 
-	<form class="form-inline">
+
+  	<form action="/fabrica/" method="post" class="form-inline">
+    {% csrf_token %}
+
 		<div class="form-group mx-sm-3 mb-2">
 		<label for="nomeDaRegiao" class="sr-only">Nome da Região</label>
-		<input type="text" class="form-control" id="nomeDaRegiao" placeholder="Nome da Região">
+		<input type="text" class="form-control" name="nomeDaRegiao" id="nomeDaRegiao" placeholder="Nome da Região">
 		</div>
 		<button type="submit" class="btn btn-primary mb-2">Criar Região</button>
-	</form>
+	
 
-	Selecione a região em que a nova região pertence:
+	Selecione a região em que a nova região pertence: 
+	<br/>
+	<br/>
+
 
 	{% if regioes %}
-	<ul class="list-group">
 
-		{% for regiao in regioes %}
-		<li class="list-group-item">
-			{{ regiao }}
-		</li>
-		{% endfor %}
-	</ul>
+		<select class="form-control" name="regiaoFormControlSelect" id="regiaoFormControlSelect">
+
+			{% for regiao in regioes %}
+				<option value="{{ regiao }}">{{ regiao }}</option>
+
+			{% endfor %}
+
+		</select>
+
+
+    </form>
+
 	{% endif %}
+
 
   </div>
   <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
