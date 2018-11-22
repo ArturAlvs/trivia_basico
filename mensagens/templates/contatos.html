@@ -8,17 +8,20 @@
     	<br/><br/>
 
 
-	<form>
+    <form action="/contato/" method="post" class="form-inline">
+    {% csrf_token %}
+
   <div class="form-group">
     <label for="exampleFormControlInput1">Email address</label>
-    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com">
   </div>
+  <br/>
   <div class="form-group">
     <label for="exampleFormControlSelect1">Selecione o motivo</label>
-    <select class="form-control" id="exampleFormControlSelect1">
+    <select class="form-control" name="motivo" id="motivo">
         
         <option>
-            Oi
+            Sugestão
         </option>
         <option>
             Reclamação
@@ -29,9 +32,11 @@
     
     </select>
     </div>
+
+
     <div class="form-group">
     <label for="exampleFormControlTextarea1">Digite sobre o seu contato</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    <textarea class="form-control" name="texto_enviado_pelo_user" id="texto_enviado_pelo_user" rows="3"></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary mb-2">
@@ -44,7 +49,7 @@
 <br/><br/>
 
 <span>
-    asdsad@email.com
+    triviaworldleague@gmail.com
 </span>
 
 {% endblock %}

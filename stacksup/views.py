@@ -26,8 +26,6 @@ class Index(View):
 
 			carteira = Carteira.objects.filter(user=request.user).first()
 
-
-
 			user = user.first()
 
 		else:
@@ -278,6 +276,11 @@ class FabricaView(View):
 		# receber o tipo do usuario
 		if textoPerguntaQuestao != False and textoRespostaCorreta != False:
 
+			regiao_da_questao = request.POST.get('regiaoFormControlSelectQuestao', False)
+
+			regiao_pergunta = Regiao.objects.filter(name=regiao_da_questao).first()
+
+
 			textoRespostaErrada1 = request.POST.get('textoRespostaErrada1', False)
 			textoRespostaErrada2 = request.POST.get('textoRespostaErrada2', False)
 			textoRespostaErrada3 = request.POST.get('textoRespostaErrada3', False)
@@ -351,7 +354,7 @@ class FabricaView(View):
 				narrativaRespostaErrada3.save()
 
 
-				questao = Questao(user_criador=request.user, pergunta=pergunta, regiao=reg)
+				questao = Questao(user_criador=request.user, pergunta=pergunta, regiao=regiao_pergunta)
 				questao.save()
 				questao.respostas.add(respostaCorreta)
 				questao.respostas.add(respostaErrada1)
@@ -364,9 +367,7 @@ class FabricaView(View):
 
 		elif nomeDaRegiao != False:
 
-			print("ASDSADASDAS------------")
-			print("ASDSADASDAS------------")
-			print("ASDSADASDAS------------")
+			
 
 			regiao_pai_nome = request.POST.get('regiaoFormControlSelect', False)
 			
@@ -388,10 +389,9 @@ class FabricaView(View):
 			return HttpResponseRedirect("/fabrica")
 
 
-		return render(
-		request,
-		'stacksup/fabrica.html',
-		)
+		
+		return HttpResponseRedirect("/fabrica")
+		
 
 
 

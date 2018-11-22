@@ -46,44 +46,63 @@
 
   	<form action="/fabrica/" method="post" class="form-inline">
     {% csrf_token %}
-	<div class="card">
+	<div class="card text-center w-100">
 		<div class="card-body">
-			<h5 class="card-title">
+			<span class="card-title">
 
-				<div class="form-group">
-    <select class="form-control" id="categoriaFormControlSelect" name="categoriaFormControlSelect">
-      <option value="Artes">Artes</option>
-      <option value="Ciencias">Ciencias</option>
-      <option value="Cotidiano">Cotidiano</option>
-      <option value="Esportes">Esportes</option>
-      <option value="Geografia">Geografia</option>
-      <option value="Historia">Historia</option>
-    </select>
-  </div>
+				{% if regioes %}
+
+					<select class="form-control w-100" name="regiaoFormControlSelectQuestao" id="regiaoFormControlSelectQuestao">
+
+						{% for regiao in regioes %}
+							<option value="{{ regiao }}">{{ regiao }}</option>
+
+						{% endfor %}
+
+					</select>
+
+				{% endif %}
+
+				<br/>
+
+	<br/>
+
+				<div class="form-group w-100">
+				    <select class="form-control w-100" id="categoriaFormControlSelect" name="categoriaFormControlSelect">
+				      <option value="Artes">Artes</option>
+				      <option value="Ciencias">Ciencias</option>
+				      <option value="Cotidiano">Cotidiano</option>
+				      <option value="Esportes">Esportes</option>
+				      <option value="Geografia">Geografia</option>
+				      <option value="Historia">Historia</option>
+				    </select>
+				  </div>
 <!-- ("0", "Artes"),
 		("1", "Ciencias"),
 		("2", "Cotidiano"),
 		("3", "Esportes"),
 		("4", "Geografia"),
 		("5", "Historia"), -->
-			</h5>
+			</span>
+
+			<br/>
 
 			
-		<input type="text" class="form-control card-text" name="textoPerguntaQuestao" id="textoPerguntaQuestao" placeholder="Pergunta da Questão">
+		<input type="text" class="form-control card-text w-100" name="textoPerguntaQuestao" id="textoPerguntaQuestao" placeholder="Pergunta da Questão">
 
 		</div>
 		<ul class="list-group list-group-flush">
 			<li class="list-group-item">
-				<input type="text" class="form-control card-text" name="textoRespostaCorreta" id="textoRespostaCorreta" placeholder="Resposta Correta">
+				<input type="text" class="form-control card-text w-100" name="textoRespostaCorreta" id="textoRespostaCorreta" placeholder="Resposta Correta">
 			</li>
 			<li class="list-group-item">
-				<input type="text" class="form-control card-text" name="textoRespostaErrada1" id="textoRespostaErrada1" placeholder="Resposta Errada">
+				<input type="text" class="form-control card-text w-100" name="textoRespostaErrada1" id="textoRespostaErrada1" placeholder="Resposta Errada">
 			</li>
 			<li class="list-group-item">
-				<input type="text" class="form-control card-text" name="textoRespostaErrada2" id="textoRespostaErrada2" placeholder="Resposta Errada">
+				<input type="text" class="form-control card-text w-100" name="textoRespostaErrada2" id="textoRespostaErrada2" placeholder="Resposta Errada">
 			</li>
 			<li class="list-group-item">
-				<input type="text" class="form-control card-text" name="textoRespostaErrada3" id="textoRespostaErrada3" placeholder="Resposta Errada">
+				<input type="text" class="form-control card-text w-100" name="textoRespostaErrada3" id="textoRespostaErrada3" placeholder="Resposta Errada">
 			</li>
 		</ul>
 
@@ -120,22 +139,17 @@
 			<div class="card
 
 				{% if questao.3 == '0' %}
-					bg-primary
-
+					bg-danger
 				{% elif questao.3 == '1' %}
 					bg-success
 				{% elif questao.3 == '2' %}
-					bg-danger
-				{% elif questao.3 == '3' %}
-					bg-warning
-
-				{% elif questao.3 == '4' %}
-					bg-info
-
-				{% elif questao.3 == '5' %}
 					bg-dark
-
-
+				{% elif questao.3 == '3' %}
+					bg-info
+				{% elif questao.3 == '4' %}		
+					bg-primary
+				{% elif questao.3 == '5' %}
+					bg-warning
 				{% endif %}
 
 			">
@@ -159,17 +173,17 @@
 
 					
 					{% if questao.3 == '0' %}
-						list-group-item-primary
+						list-group-item-danger
 					{% elif questao.3 == '1' %}
 						list-group-item-success
 					{% elif questao.3 == '2' %}
-						list-group-item-danger
-					{% elif questao.3 == '3' %}
-						list-group-item-warning
-					{% elif questao.3 == '4' %}
-						list-group-item-info
-					{% elif questao.3 == '5' %}
 						list-group-item-dark
+					{% elif questao.3 == '3' %}
+						list-group-item-info
+					{% elif questao.3 == '4' %}
+						list-group-item-primary
+					{% elif questao.3 == '5' %}
+						list-group-item-warning
 
 					{% endif %}
 
@@ -186,17 +200,17 @@
 					<li class="list-group-item
 
 					{% if questao.3 == '0' %}
-						list-group-item-primary
+						list-group-item-danger
 					{% elif questao.3 == '1' %}
 						list-group-item-success
 					{% elif questao.3 == '2' %}
-						list-group-item-danger
-					{% elif questao.3 == '3' %}
-						list-group-item-warning
-					{% elif questao.3 == '4' %}
-						list-group-item-info
-					{% elif questao.3 == '5' %}
 						list-group-item-dark
+					{% elif questao.3 == '3' %}
+						list-group-item-info
+					{% elif questao.3 == '4' %}
+						list-group-item-primary
+					{% elif questao.3 == '5' %}
+						list-group-item-warning
 
 					{% endif %}
 
