@@ -7,6 +7,8 @@ urlpatterns = [
 	path('', views.Index.as_view()),
 	path('nova_partida/', views.NovaPartida.as_view()),
 
+	path('fabrica/', views.FabricaView.as_view()),
+
 	# path('partida/', views.Partida.as_view()),
 
 	url(r'^partida/(?P<id_partida>\d+)/', views.PartidaView.as_view()),

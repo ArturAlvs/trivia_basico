@@ -28,8 +28,7 @@ class UserProfile(models.Model):
 	regioes = models.ManyToManyField(Regiao, blank=True, default=None)
 	idiomas = models.ManyToManyField(Idioma, blank=True, default=None)
 
-
-	REQUIRED_FIELDS = ['nome']
+	premium = models.BooleanField('premium', default=False)
 
 	def __str__(self):
 		return self.nome + " ; " + self.user.email

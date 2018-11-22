@@ -1,0 +1,191 @@
+{% extends "base_generic.html" %}
+
+
+{% block content %}
+
+    	
+
+
+<div class="card">
+  <div class="card-header">
+  	Informações -  {{ usuario.nome }}
+    </div>
+  <div class="card-body">
+    <!-- <h5 class="card-title">Special title treatment</h5> -->
+    <p class="card-text">
+    	{{ carteira.moedas }} moedas
+    </p>
+
+    <p class="card-text">
+    	{{ carteira.pontos }} pontos
+    </p>
+
+    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+  </div>
+</div>
+
+<br/><br/>
+    	<br/><br/>
+
+
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Criar Questão</a>
+    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Criar Região</a>
+    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Log de Respostas</a>
+  </div>
+</nav>
+
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+  	<br/>
+
+  	<!-- form enviar questao -->
+
+  	<form action="/fabrica/" method="post" class="form-inline">
+    {% csrf_token %}
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">Card title</h5>
+
+			
+		<input type="text" class="form-control card-text" name="textoPerguntaQuestao" id="textoPerguntaQuestao" placeholder="Pergunta da Questão">
+
+		</div>
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item">
+				<input type="text" class="form-control card-text" name="textoRespostaCorreta" id="textoRespostaCorreta" placeholder="Resposta Correta">
+			</li>
+			<li class="list-group-item">
+				<input type="text" class="form-control card-text" name="textoRespostaErrada1" id="textoRespostaErrada1" placeholder="Resposta Errada">
+			</li>
+			<li class="list-group-item">
+				<input type="text" class="form-control card-text" name="textoRespostaErrada2" id="textoRespostaErrada2" placeholder="Resposta Errada">
+			</li>
+			<li class="list-group-item">
+				<input type="text" class="form-control card-text" name="textoRespostaErrada3" id="textoRespostaErrada3" placeholder="Resposta Errada">
+			</li>
+		</ul>
+
+		<div class="card-body">
+			
+			<button type="submit" class="btn btn-primary mb-2">Criar Questão</button>
+
+		</div>
+	</div>
+
+	</form>
+
+	<br/>
+
+	{% if  questoes %}
+
+		{% for questao in questoes %}
+
+
+			<div class="card">
+
+
+
+				<div class="card-body">
+
+				{{ questao.0 }}
+
+				</div>
+				<ul class="list-group list-group-flush">
+
+				{% for resposta in questao.1 %}
+
+
+					{% if resposta == questao.2 %}
+
+					<li class="list-group-item d-flex justify-content-between align-items-center">
+						{{ resposta }}
+
+						<span class="badge badge-primary badge-pill">Correta</span>
+					</li>
+
+
+
+					{% else %}
+
+					<li class="list-group-item">
+						{{ resposta }}
+					</li>
+
+					{% endif %}
+
+				{% endfor %}
+
+				</ul>
+
+				<div class="card-body">
+					
+					Criada em ...
+
+				</div>
+
+
+			</div>
+
+
+		{% endfor %}
+
+	{% endif %}
+
+
+	<br/>
+
+</div>
+  <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+
+  	<br/>
+
+	<form class="form-inline">
+		<div class="form-group mx-sm-3 mb-2">
+		<label for="nomeDaRegiao" class="sr-only">Nome da Região</label>
+		<input type="text" class="form-control" id="nomeDaRegiao" placeholder="Nome da Região">
+		</div>
+		<button type="submit" class="btn btn-primary mb-2">Criar Região</button>
+	</form>
+
+	Selecione a região em que a nova região pertence:
+
+	{% if regioes %}
+	<ul class="list-group">
+
+		{% for regiao in regioes %}
+		<li class="list-group-item">
+			{{ regiao }}
+		</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+  </div>
+  <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+  	
+
+  	cc
+
+  </div>
+</div>
+
+
+<!-- <ul class="list-group">
+	<li class="list-group-item d-flex justify-content-between align-items-center">
+		Criar Questão
+	<span class="badge badge-primary badge-pill">14</span>
+	</li>
+	<li class="list-group-item d-flex justify-content-between align-items-center">
+		Criar Região
+	<span class="badge badge-primary badge-pill">2</span>
+	</li>
+	<li class="list-group-item d-flex justify-content-between align-items-center">
+		Log de Questões
+	<span class="badge badge-primary badge-pill">1</span>
+	</li>
+</ul> -->
+
+{% endblock %}

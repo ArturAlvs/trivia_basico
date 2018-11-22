@@ -20,7 +20,7 @@ from django.conf.urls import url
 from django.conf import settings
 from django.conf.urls.static import static
 
-from usuario_perfil.views import Logout, Login, Register
+from usuario_perfil.views import Logout, Login, Register, UpdateCadastro
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +32,7 @@ urlpatterns = [
 
     url(r'^login/$', Login.as_view()),
     url(r'^logout/$', Logout.as_view()),
-    url(r'^signup/$', Register.as_view()),
+    # url(r'^signup/$', Register.as_view()),
+    url(r'^cadastro/$', UpdateCadastro.as_view()),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

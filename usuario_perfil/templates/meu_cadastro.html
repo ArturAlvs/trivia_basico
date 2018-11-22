@@ -9,7 +9,7 @@
         <br>
         <br>
 
-            <h4>Cadastro</h4>
+            <h4>Atualizar Cadastro</h4>
             
         <div class="blankdivider30">
         </div>
@@ -25,31 +25,24 @@
             {% if error %}
                 <p class="error-message">{{ error }}</p>
             {% endif %}
-            <form action="/signup/" method="post" class="contactForm">
+
+
+            <form action="/cadastro/" method="post" class="contactForm">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <input name="name" class="form-control" id="name" placeholder="Usuario"
-                                    required/>
+                            <input name="name" class="form-control" id="name" placeholder="Usuario" value="{{user_perfil.nome}}" />
                             <div class="validation"></div>
                         </div>
                         <div class="form-group">
-                            <input class="form-control" name="email" id="email" placeholder="Email"
-                             required/>
+                            <input class="form-control" name="email" id="email" placeholder="Email" value="{{user.email}}" />
                             <div class="validation"></div>
                         </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Senha" required/>
-                            <div class="validation"></div>
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirmaçao de Senha" required/>
-                            <div class="validation"></div>
-                        </div>
+                        
 
                         <div class="form-group">
-                            <select class="form-control" id="gender" name="gender" required>
+                            <select class="form-control" id="gender" name="gender" >
                                 <option value="" disabled selected>Sexo</option>
                                 <option value="M" {% if user.profile.gender == 'M' %}selected="selected"{% endif %}>Masculino</option>
                                 <option value="F" {% if user.profile.gender == 'F' %}selected="selected"{% endif %}>Feminino</option>
@@ -58,9 +51,16 @@
 
 
                         <!-- Idiomas -->
+
+                        {% for idioma_usuario in idiomas_usuario %}
+                            <h3>
+                                <span class="badge badge-secondary">{{ idioma_usuario }}</span>
+                            </h3>
+                        {% endfor %}
+
                         {% if idiomas %}
                              <div class="form-group">
-                                <select class="form-control" id="idioma" name="idioma" required>
+                                <select class="form-control" id="idioma" name="idioma" >
                                     <option value="" disabled selected>Idiomas</option>
                                     
 
@@ -76,9 +76,16 @@
                         {% endif %}
 
                         <!-- Regioes -->
+
+                        {% for regiao_user in regioes_usuario %}
+                            <h3>
+                                <span class="badge badge-secondary">{{ regiao_user }}</span>
+                            </h3>
+                        {% endfor %}
+
                         {% if regioes %}
 	                         <div class="form-group">
-	                            <select class="form-control" id="regiao" name="regiao" required>
+	                            <select class="form-control" id="regiao" name="regiao" >
 	                                <option value="" disabled selected>Regioes</option>
 	                                
 
@@ -97,11 +104,21 @@
 
                         <div class="form-group">
                             <input class="form-control" name="age" id="age" placeholder="Idade"
-                            value="{{ user.profile.age }}"/>
+                            value="{{ user_perfil.age }}"/>
                             <div class="validation"></div>
                         </div>
 
-                        <input type="submit" value="Cadastrar" class="btn btn-theme pull-left">
+
+                        <!-- <div class="form-group">
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Senha atual" required/>
+                            <div class="validation"></div>
+                        </div> -->
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="novoPassword" id="novoPassword" placeholder="Nova senha" />
+                            <div class="validation"></div>
+                        </div>
+
+                        <input type="submit" value="Atualizar" class="btn btn-theme pull-left">
                     </div>
                 </div>
             </form>

@@ -4,6 +4,9 @@ from django.views.generic import View
 from usuario_perfil.models import UserProfile
 from value.models import Carteira
 
+from triviamente.models import Questao, NarrativaString, Pergunta, Resposta, Referencia
+
+
 from regionamento.models import Regiao, Idioma
 
 from django.http import HttpResponseRedirect
@@ -92,14 +95,21 @@ class NovaPartida(View):
 		preco = request.POST.get('preco', False)
 
 		if preco == False:
-			return HttpResponseRedirect("/")
+			return HttpResponseRedirect("/nova_partida")
+
+
+		# checando se usuario pode competir por zero
+		if preco == 0 and not UserProfile.objects.filter(nome=request.user).first().premium:
+			return HttpResponseRedirect("/nova_partida")
+
+		
 		
 
 
-		p = Partida(usuario_partida=request.user, custo=preco)
+		p = Partida(usuario=request.user, custo=preco)
 		
 
-		usuario = models.OneToOneField(User, related_name='usuario_partida', on_delete=models.CASCADE)
+		# usuario = models.OneToOneField(User, related_name='usuario_partida', on_delete=models.CASCADE)
 
 	# quando foi criado
 	# date = models.DateTimeField('data_criacao', auto_now_add=True, blank=True)
@@ -164,3 +174,156 @@ class PartidaView(View):
 		'stacksup/partida.html',
 		context=values,
 		)
+
+
+# aqui vao as view de logs, adicionar perguntas e regioes
+class FabricaView(View):
+
+	def get(self, request):
+
+		values = {}
+		qs = []
+
+		if request.user.is_authenticated:
+			user = UserProfile.objects.filter(nome=request.user) 
+
+			carteira = Carteira.objects.filter(user=request.user).first()
+
+			questoes = Questao.objects.filter(user_criador=request.user)
+
+			try:
+
+				# cada questao criada pelo usuario
+				for questao in questoes:
+
+					# a pergunda
+					pergunta = NarrativaString.objects.filter(pergunta=questao.pergunta).first()
+
+					# as respostas
+					respostas = []
+					correta = None
+					for resposta in questao.respostas.all():
+						
+						respostas.append( NarrativaString.objects.filter(resposta=resposta).first() )
+
+						# verificando se a resposta é a correta
+						for referencia in resposta.referencias.all():
+							if referencia.pergunta == questao.pergunta:
+								correta = NarrativaString.objects.filter(resposta=resposta).first()
+								
+
+					qs.append( (pergunta, respostas, correta) )
+
+
+
+			except Exception as e:
+				raise
+
+
+			regioes = Regiao.objects.all()
+
+			# logs
+			logs = []
+			partidas = Partida.objects.filter(usuario=request.user)
+
+			try:
+				for partida in partidas:
+					log.append( partida.q1_categoria_1 )
+
+				values['logs'] = logs
+
+			except Exception as e:
+				pass
+
+			user = user.first()
+
+		else:
+			# user = None
+			# carteira = None
+			return HttpResponseRedirect("/login")
+
+		values['usuario'] = user
+		values['carteira'] = carteira
+		values['questoes'] = qs
+
+		values['regioes'] = regioes
+
+
+		return render(
+		request,
+		'stacksup/fabrica.html',
+		context=values,
+		)
+
+
+	def post(self, request):
+
+		user = UserProfile.objects.filter(nome=request.user).first()
+		
+		idioma = user.idiomas.all().first()
+		reg = user.regioes.all().first()
+
+		textoPerguntaQuestao = request.POST.get('textoPerguntaQuestao', False)
+		textoRespostaCorreta = request.POST.get('textoRespostaCorreta', False)
+		textoRespostaErrada1 = request.POST.get('textoRespostaErrada1', False)
+		textoRespostaErrada2 = request.POST.get('textoRespostaErrada2', False)
+		textoRespostaErrada3 = request.POST.get('textoRespostaErrada3', False)
+
+		if textoPerguntaQuestao == False or textoRespostaCorreta == False:
+			return HttpResponseRedirect("/fabrica")
+
+		# receber o tipo do usuario
+		try:
+			pergunta = Pergunta(tipo_pergunta_ou_resposta=0)
+			pergunta.save()
+
+			refe = Referencia(pergunta=pergunta, texto=request.user)
+			refe.save()
+
+			respostaCorreta = Resposta()
+			respostaCorreta.save()
+			respostaCorreta.referencias.add(refe)
+
+			respostaErrada1 = Resposta()
+			respostaErrada1.save()
+
+			respostaErrada2 = Resposta()
+			respostaErrada2.save()
+
+			respostaErrada3 = Resposta()
+			respostaErrada3.save()
+
+			narrativaPergunta = NarrativaString(tipo_pergunta_ou_resposta="P", idioma=idioma, user_criador=request.user, narrativa=textoPerguntaQuestao, pergunta=pergunta)
+			narrativaPergunta.save()
+
+			narrativaRespostaCorreta = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaCorreta, resposta=respostaCorreta)
+			narrativaRespostaCorreta.save()
+			narrativaRespostaErrada1 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada1, resposta=respostaErrada1)
+			narrativaRespostaErrada1.save()
+			narrativaRespostaErrada2 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada2, resposta=respostaErrada2)
+			narrativaRespostaErrada2.save()
+			narrativaRespostaErrada3 = NarrativaString(tipo_pergunta_ou_resposta="R", idioma=idioma, user_criador=request.user, narrativa=textoRespostaErrada3, resposta=respostaErrada3)
+			narrativaRespostaErrada3.save()
+
+
+			questao = Questao(user_criador=request.user, pergunta=pergunta, regiao=reg)
+			questao.save()
+			questao.respostas.add(respostaCorreta)
+			questao.respostas.add(respostaErrada1)
+			questao.respostas.add(respostaErrada2)
+			questao.respostas.add(respostaErrada3)
+
+		except Exception as e:
+			raise
+
+
+
+		return render(
+		request,
+		'stacksup/fabrica.html',
+		)
+
+
+
+		
+		
