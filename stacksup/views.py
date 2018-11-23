@@ -4,7 +4,7 @@ from django.views.generic import View
 from usuario_perfil.models import UserProfile
 from value.models import Carteira
 
-from triviamente.models import Questao, NarrativaString, Pergunta, Resposta, Referencia
+from triviamente.models import Questao, NarrativaString, Pergunta, Resposta, Referencia, PrototipoQuestao
 
 
 from regionamento.models import Regiao, Idioma, ConexaoRegiao
@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect
 
 from .models import Partida, SUQuestionLog
 
+from random import randint
 
 # Create your views here.
 class Index(View):
@@ -85,73 +86,133 @@ class NovaPartida(View):
 
 	def post(self, request):
 
-		ESCOLHA_CUSTO_PARTIDA = [0, 100, 500, 1000]
+		ESCOLHA_CUSTO_PARTIDA = [0, 100, 500, 1000, 5000, 10000]
 
 
 		idioma = request.POST.get('idioma', False)
 		regiao = request.POST.get('regiao', False)
 		preco = request.POST.get('preco', False)
+		preco = int(preco)
+		preco_final = preco
 
 		if preco == False:
 			return HttpResponseRedirect("/nova_partida")
 
 
 		# checando se usuario pode competir por zero
-		if preco == 0 and not UserProfile.objects.filter(nome=request.user).first().premium:
-			return HttpResponseRedirect("/nova_partida")
-
+		if UserProfile.objects.filter(nome=request.user).first().premium:
+			preco_final = 0
+		else:
+			usuario_perder_moedas = Carteira.objects.filter(user=request.user).first()
+			usuario_perder_moedas.moedas = int(usuario_perder_moedas.moedas) - preco_final
+			usuario_perder_moedas.save()
 		
+		carteira_para_a_partida = Carteira.objects.filter(moedas=(preco/2), user=None).first()
+
+		# se não existir, ciro
+		if carteira_para_a_partida == None:
+			comentario_carteira = "carteira_sistema_"+ str((preco/2)) +"_moedas"
+			carteira_para_a_partida = Carteira(moedas=(preco/2), comentario=comentario_carteira )
+			carteira_para_a_partida.save()
 		
 
+		questoes_escolhidas_p_partida = []
+		categorias_existentes = ["Artes", "Ciencias", "Cotidiano", "Esportes", "Geografia", "Historia"]
+		for questao_grupo in range(3):
+			
+			categorias_questoes = []
+			
+			for questao_id in range(5):
+				# escolho a categoria
+				categoria_questao = randint(0, 5)
+				while categoria_questao in categorias_questoes:
+					categoria_questao = randint(0, 5)
 
-		p = Partida(usuario=request.user, custo=preco)
-		
+				# adiciona para nao escoler mais
+				categorias_questoes.append(categoria_questao)
 
-		# usuario = models.OneToOneField(User, related_name='usuario_partida', on_delete=models.CASCADE)
+				# pego as perguntas
+				pergunta = Pergunta.objects.filter(tipo_pergunta_ou_resposta=categoria_questao).all()
+				# escolho uma
 
-	# quando foi criado
-	# date = models.DateTimeField('data_criacao', auto_now_add=True, blank=True)
+				print("pergunta----------")
+				print(categorias_existentes)
+				print(categoria_questao)
+				print(pergunta)
+				print("pergunta----------")
 
-	# # as questoes da partida
-	# q1_categoria_1 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_1_categoria_1', on_delete=models.SET_NULL)
-	# q1_categoria_2 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_1_categoria_2', on_delete=models.SET_NULL)
-	# q1_categoria_3 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_1_categoria_3', on_delete=models.SET_NULL)
-	# q1_categoria_4 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_1_categoria_4', on_delete=models.SET_NULL)
-	# q1_categoria_5 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_1_categoria_5', on_delete=models.SET_NULL)
+				qual_pergunta = randint(0, (len(pergunta)-1))
+				# seleciono a escolhida
+				pergunta = pergunta[qual_pergunta]
 
-	# carteira_se_chegar_aqui_1 = models.ForeignKey(Carteira, related_name='carteira_se_chegar_aqui_1', null=True, blank=False, on_delete=models.SET_NULL)
+				questao = Questao.objects.filter(pergunta=pergunta).first()
 
-	# q2_categoria_1 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_1', on_delete=models.SET_NULL)
-	# q2_categoria_2 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_2', on_delete=models.SET_NULL)
-	# q2_categoria_3 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_3', on_delete=models.SET_NULL)
-	# q2_categoria_4 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_4', on_delete=models.SET_NULL)
-	# q2_categoria_5 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_5', on_delete=models.SET_NULL)
-
-	# carteira_se_chegar_aqui_2 = models.ForeignKey(Carteira, related_name='carteira_se_chegar_aqui_2', null=True, blank=False, on_delete=models.SET_NULL)
-
-	# q3_categoria_1 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_1', on_delete=models.SET_NULL)
-	# q3_categoria_2 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_2', on_delete=models.SET_NULL)
-	# q3_categoria_3 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_3', on_delete=models.SET_NULL)
-	# q3_categoria_4 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_4', on_delete=models.SET_NULL)
-	# q3_categoria_5 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_5', on_delete=models.SET_NULL)
-
-	# carteira_se_chegar_aqui_3 = models.ForeignKey(Carteira, related_name='carteira_se_chegar_aqui_3', null=True, blank=False, on_delete=models.SET_NULL)
+				questoes_escolhidas_p_partida.append(questao)
 
 
-	# # custo para jogar
-	# custo = models.IntegerField('custo', default=2)
+		q1_categoria_1 = SUQuestionLog(questao=questoes_escolhidas_p_partida[0])
+		q1_categoria_1.save()
+		q1_categoria_2 = SUQuestionLog(questao=questoes_escolhidas_p_partida[1])
+		q1_categoria_2.save()
+		q1_categoria_3 = SUQuestionLog(questao=questoes_escolhidas_p_partida[2])
+		q1_categoria_3.save()
+		q1_categoria_4 = SUQuestionLog(questao=questoes_escolhidas_p_partida[3])
+		q1_categoria_4.save()
+		q1_categoria_5 = SUQuestionLog(questao=questoes_escolhidas_p_partida[4])
+		q1_categoria_5.save()
+		q2_categoria_1 = SUQuestionLog(questao=questoes_escolhidas_p_partida[5])
+		q2_categoria_1.save()
+		q2_categoria_2 = SUQuestionLog(questao=questoes_escolhidas_p_partida[6])
+		q2_categoria_2.save()
+		q2_categoria_3 = SUQuestionLog(questao=questoes_escolhidas_p_partida[7])
+		q2_categoria_3.save()
+		q2_categoria_4 = SUQuestionLog(questao=questoes_escolhidas_p_partida[8])
+		q2_categoria_4.save()
+		q2_categoria_5 = SUQuestionLog(questao=questoes_escolhidas_p_partida[9])
+		q2_categoria_5.save()
+		q3_categoria_1 = SUQuestionLog(questao=questoes_escolhidas_p_partida[10])
+		q3_categoria_1.save()
+		q3_categoria_2 = SUQuestionLog(questao=questoes_escolhidas_p_partida[11])
+		q3_categoria_2.save()
+		q3_categoria_3 = SUQuestionLog(questao=questoes_escolhidas_p_partida[12])
+		q3_categoria_3.save()
+		q3_categoria_4 = SUQuestionLog(questao=questoes_escolhidas_p_partida[13])
+		q3_categoria_4.save()
+		q3_categoria_5 = SUQuestionLog(questao=questoes_escolhidas_p_partida[14])
+		q3_categoria_5.save()
 
-		return HttpResponseRedirect("/")
+		partida = Partida(usuario_partida=request.user, custo=preco_final, carteira_de_premiacao=carteira_para_a_partida,
+			q1_categoria_1=q1_categoria_1,
+			q1_categoria_2=q1_categoria_2,
+			q1_categoria_3=q1_categoria_3,
+			q1_categoria_4=q1_categoria_4,
+			q1_categoria_5=q1_categoria_5,
+			q2_categoria_1=q2_categoria_1,
+			q2_categoria_2=q2_categoria_2,
+			q2_categoria_3=q2_categoria_3,
+			q2_categoria_4=q2_categoria_4,
+			q2_categoria_5=q2_categoria_5,
+			q3_categoria_1=q3_categoria_1,
+			q3_categoria_2=q3_categoria_2,
+			q3_categoria_3=q3_categoria_3,
+			q3_categoria_4=q3_categoria_4,
+			q3_categoria_5=q3_categoria_5
+			)
+		partida.save()
+
+		url_to_go = "/partida/" + str(partida.id)
+		return HttpResponseRedirect(url_to_go)
 
 
 class PartidaView(View):
 
 	def get(self, request, id_partida):
 
+		values = {}
 
 		if request.user.is_authenticated:
 
-			partida = Partida.objects.filter(id=id_partida).first()
+			partida = Partida.objects.filter(id=id_partida, usuario_partida=request.user).first()
 
 			# nao tem partida, vai pra 
 			if partida == None:
@@ -161,11 +222,7 @@ class PartidaView(View):
 			return HttpResponseRedirect("/")
 		
 		
-
-
-		values = {}
-
-
+		values['partida'] = partida
 
 		return render(
 		request,
@@ -272,14 +329,13 @@ class FabricaView(View):
 		# dados da regiao
 		nomeDaRegiao = request.POST.get('nomeDaRegiao', False)
 
-
+		# criando questoes
 		# receber o tipo do usuario
 		if textoPerguntaQuestao != False and textoRespostaCorreta != False:
 
 			regiao_da_questao = request.POST.get('regiaoFormControlSelectQuestao', False)
 
 			regiao_pergunta = Regiao.objects.filter(nome=regiao_da_questao).first()
-
 
 			textoRespostaErrada1 = request.POST.get('textoRespostaErrada1', False)
 			textoRespostaErrada2 = request.POST.get('textoRespostaErrada2', False)
@@ -361,13 +417,20 @@ class FabricaView(View):
 				questao.respostas.add(respostaErrada2)
 				questao.respostas.add(respostaErrada3)
 
+
+				# pos a questao ainda esta em avaliação
+				proto_questao = PrototipoQuestao(questao=questao)
+				proto_questao.save()
+
+
+
+
 			except Exception as e:
 				raise
 
 
+		# criando regioes
 		elif nomeDaRegiao != False:
-
-			
 
 			regiao_pai_nome = request.POST.get('regiaoFormControlSelect', False)
 			

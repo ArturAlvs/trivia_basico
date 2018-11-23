@@ -54,16 +54,15 @@
 					Regiao:
 					<input type="text" readonly class="form-control-plaintext" name="regiao" id="regiao" value="{{ regiaoUser }}">
 
-					{% if usuario.premium %}
-
-					<button type="submit" class="btn btn-primary mb-2" name="preco" value="0">0 moedas</button>
-
-					{% else %}
-
 					<button type="submit" class="btn btn-primary mb-2" name="preco" value="100">100 moedas</button>
+					
 					<button type="submit" class="btn btn-primary mb-2" name="preco" value="500">500 moedas</button>
+					
+					<button type="submit" class="btn btn-primary mb-2" name="preco" value="1000">1000 moedas</button>
 
-					{% endif %}
+					<button type="submit" class="btn btn-primary mb-2" name="preco" value="5000">5000 moedas</button>
+					
+					<button type="submit" class="btn btn-primary mb-2" name="preco" value="10000">10000 moedas</button>
 
 				</form>
 
@@ -74,13 +73,20 @@
 			<br/><br/>
 			<hr/>
 
+			<h2>Jogo customizado</h2>
+			<hr/>
+
+
+			<form action="/nova_partida/"
+				method="post" class="novaPartidaForm">
+                {% csrf_token %}
 
 			<div class="form-group">
 				<label for="idiomaFormControlSelect">Selecione o Idioma</label>
 				<select class="form-control" id="idiomaFormControlSelect">
 
 					{% for idioma in idiomas %}
-						<option>
+						<option value="{{ idioma }}">
 							{{ idioma }}
 						</option>
 					{% endfor %}
@@ -89,12 +95,14 @@
 				</select>
 			</div>
 
+			<br/>
+			<br/>
 			<div class="form-group">
 				<label for="regiaoFormControlSelect">Selecione a Regiao</label>
 				<select class="form-control" id="regiaoFormControlSelect">
 
 					{% for regiao in regioes %}
-						<option>
+						<option value="{{ regiao }}">
 							{{ regiao }}
 						</option>
 					{% endfor %}
@@ -102,36 +110,31 @@
 			</div>
 
 
-
-
 			<ul class="list-group">
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					<form class="form-inline">
-						<div class="form-group mb-2">
-							<label for="staticEmail2" class="sr-only">CUSTO_PEQUENO</label>
-							<!-- <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="email@example.com"> -->
-						</div>
-						<button type="submit" class="btn btn-primary mb-2">100 moedas</button>
-					</form>
+				
+				<li class="list-group-item">
+					<button type="submit" class="btn btn-primary" name="preco" value="100">CUSTO_PEQUENO 100 moedas</button>
 				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					CUSTO_MEDIO
-					<span class="badge badge-primary badge-pill">500</span>
+
+				<li class="list-group-item">
+					<button type="submit" class="btn btn-primary" name="preco" value="500">CUSTO_MEDIO 500 moedas</button>
 				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					CUSTO_GRANDE
-					<span class="badge badge-primary badge-pill">1000</span>
+
+				<li class="list-group-item">
+					<button type="submit" class="btn btn-primary" name="preco" value="1000">CUSTO_GRANDE 1000 moedas</button>
 				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					CUSTO_ENORME
-					<span class="badge badge-primary badge-pill">5000</span>
+
+				<li class="list-group-item">
+					<button type="submit" class="btn btn-primary" name="preco" value="5000">CUSTO_ENORME 5000 moedas</button>
 				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					CUSTO_ABSURDO
-					<span class="badge badge-primary badge-pill">10000</span>
+
+				<li class="list-group-item">
+					<button type="submit" class="btn btn-primary" name="preco" value="10000">CUSTO_ABSURDO 100 moedas</button>
 				</li>
+
 			</ul>
 
+			</form>
 
 
 

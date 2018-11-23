@@ -17,7 +17,7 @@ class Pergunta(models.Model):
 		("5", "Historia"),
 	)
 
-	tipo_pergunta_ou_resposta = models.CharField('categoria', max_length=20, choices=ESCOLHA_TIPO_AREA, default='0')
+	tipo_pergunta_ou_resposta = models.CharField('tipo_pergunta_ou_resposta', max_length=20, choices=ESCOLHA_TIPO_AREA, default='0')
 
 
 	def __str__(self):
@@ -29,6 +29,9 @@ class Pergunta(models.Model):
 			narra = "Pergunta sem narrativa"
 
 		return narra
+
+	def categoria(self):
+		return str(self.ESCOLHA_TIPO_AREA[int(self.tipo_pergunta_ou_resposta)][1])
 
 
 
@@ -148,23 +151,13 @@ class Questao(models.Model):
 # 	escolha_usuario = models.CharField('escolha', max_length=9, choices=ESCOLHA_RESPOSTA_USUARIO)
 
 class PrototipoQuestao(models.Model):
-	
-	ESCOLHA_PROTOTIPO_QUESTAO = (
-		("0", "Ruim"),
-		("1", "Neutra"),
-		("2", "Boa"),
-	)
 
 	questao = models.OneToOneField(Questao, on_delete=models.CASCADE, primary_key=True, null=False)
 
-	user_criador = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-
-	escolha_usuario = models.CharField('reclamacao', max_length=10, choices=ESCOLHA_PROTOTIPO_QUESTAO, default='0')
+	positivo = models.IntegerField('positivo', default=0)
+	negativo = models.IntegerField('negativo', default=0)
 
 	date = models.DateTimeField('data_criacao', auto_now_add=True, blank=True)
-
-
-
 
 
 class OpiniaoQuestao(models.Model):

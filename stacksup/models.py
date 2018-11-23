@@ -2,7 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
-from triviamente.models import Questao
+from triviamente.models import Questao, Resposta, NarrativaString
 
 from value.models import Carteira
 
@@ -19,14 +19,21 @@ class SUQuestionLog(models.Model):
 	questao = models.ForeignKey(Questao, null=True, blank=False, on_delete=models.CASCADE)
 
 	# qual foi a resposta
-	resposta = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+	resposta = models.ForeignKey(Resposta, null=True, blank=True, on_delete=models.SET_NULL)
 
 
 	# quando respondeu
-	data_resposta = models.DateTimeField('data_resposta', blank=True)
+	data_resposta = models.DateTimeField('data_resposta', blank=True, null=True)
 
 	def __str__(self):
-		return self.questao.pergunta.narrativa
+		narrativa = self.id
+		try:
+			narrativa = NarrativaString.objects.filter(pergunta=self.questao.pergunta).first()
+			narrativa = narrativa.narrativa
+		except Exception as e:
+			raise
+	
+		return narrativa
 
 
 class Partida(models.Model):
@@ -47,7 +54,7 @@ class Partida(models.Model):
 	# 	(CUSTO_ABSURDO, "CUSTO_ABSURDO"),
 	# )
 
-	usuario = models.OneToOneField(User, related_name='usuario_partida', on_delete=models.CASCADE)
+	usuario_partida = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
 	# quando foi criado
 	date = models.DateTimeField('data_criacao', auto_now_add=True, blank=True)
@@ -59,15 +66,11 @@ class Partida(models.Model):
 	q1_categoria_4 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_1_categoria_4', on_delete=models.SET_NULL)
 	q1_categoria_5 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_1_categoria_5', on_delete=models.SET_NULL)
 
-	carteira_se_chegar_aqui_1 = models.ForeignKey(Carteira, related_name='carteira_se_chegar_aqui_1', null=True, blank=False, on_delete=models.SET_NULL)
-
 	q2_categoria_1 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_1', on_delete=models.SET_NULL)
 	q2_categoria_2 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_2', on_delete=models.SET_NULL)
 	q2_categoria_3 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_3', on_delete=models.SET_NULL)
 	q2_categoria_4 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_4', on_delete=models.SET_NULL)
 	q2_categoria_5 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_2_categoria_5', on_delete=models.SET_NULL)
-
-	carteira_se_chegar_aqui_2 = models.ForeignKey(Carteira, related_name='carteira_se_chegar_aqui_2', null=True, blank=False, on_delete=models.SET_NULL)
 
 	q3_categoria_1 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_1', on_delete=models.SET_NULL)
 	q3_categoria_2 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_2', on_delete=models.SET_NULL)
@@ -75,10 +78,11 @@ class Partida(models.Model):
 	q3_categoria_4 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_4', on_delete=models.SET_NULL)
 	q3_categoria_5 = models.OneToOneField(SUQuestionLog, null=True, related_name='questao_3_categoria_5', on_delete=models.SET_NULL)
 
-	carteira_se_chegar_aqui_3 = models.ForeignKey(Carteira, related_name='carteira_se_chegar_aqui_3', null=True, blank=False, on_delete=models.SET_NULL)
-
 
 	# custo para jogar
-	custo = models.IntegerField('custo', default=2)
+	custo = models.IntegerField('custo', default=0)
+
+	carteira_de_premiacao = models.ForeignKey(Carteira, related_name='carteira_de_premiacao', null=True, blank=False, on_delete=models.SET_NULL)
+
 
 

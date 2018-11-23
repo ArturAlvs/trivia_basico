@@ -1,0 +1,75 @@
+{% extends "base_generic.html" %}
+
+
+{% block content %}
+
+    
+    	Custo da partida: {{ partida.custo }}
+
+    	<br/><br/>
+    	Começar
+
+
+    	<br/><br/>
+
+
+    	<ul class="list-group">
+			
+			<li class="list-group-item">
+				{{ partida.q1_categoria_1.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q1_categoria_2.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q1_categoria_3.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q1_categoria_4.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q1_categoria_5.questao.pergunta.categoria }}
+			</li>
+
+			<hr/>
+
+			<li class="list-group-item">
+				{{ partida.q2_categoria_1.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q2_categoria_2.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q2_categoria_3.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q2_categoria_4.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q2_categoria_5.questao.pergunta.categoria }}
+			</li>
+
+
+			<hr/>
+
+			<li class="list-group-item">
+				{{ partida.q3_categoria_1.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q3_categoria_2.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q3_categoria_3.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q3_categoria_4.questao.pergunta.categoria }}
+			</li>
+			<li class="list-group-item">
+				{{ partida.q3_categoria_5.questao.pergunta.categoria }}
+			</li>
+
+		</ul>
+
+
+
+{% endblock %}
