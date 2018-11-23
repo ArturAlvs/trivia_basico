@@ -499,8 +499,6 @@ class PartidaQuestaoView(View):
 										
 											return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
 
-										
-
 								# resposta errada
 								partida.aberta = False
 								partida.save()
@@ -541,14 +539,8 @@ class PartidaQuestaoView(View):
 							# 	partida.save()
 							# 	return HttpResponseRedirect("/")
 
-
-
-
-
 			elif retornao[1] <= 15:
 				return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]) )
-
-
 
 			# nao tem partida, vai pra 
 			if partida == None:

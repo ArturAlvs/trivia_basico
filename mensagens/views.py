@@ -35,12 +35,15 @@ class Index(View):
 
 	def post(self, request):
 
-
-		email = request.POST.get('email', False)
 		motivo = request.POST.get('motivo', False)
 		texto_enviado_pelo_user = request.POST.get('texto_enviado_pelo_user', False)
 
-		if texto_enviado_pelo_user == False:
+		print("email----------")
+		print(email)
+		print(motivo)
+		print(texto_enviado_pelo_user)
+
+		if texto_enviado_pelo_user == False or texto_enviado_pelo_user == "" or motivo == False:
 			return HttpResponseRedirect("/contato")
 		else:
 
