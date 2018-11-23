@@ -85,4 +85,6 @@ class Partida(models.Model):
 	carteira_de_premiacao = models.ForeignKey(Carteira, related_name='carteira_de_premiacao', null=True, blank=False, on_delete=models.SET_NULL)
 
 
+	aberta = models.BooleanField(default=True)
+
 

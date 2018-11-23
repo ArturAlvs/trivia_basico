@@ -12,5 +12,6 @@ urlpatterns = [
 	# path('partida/', views.Partida.as_view()),
 
 	url(r'^partida/(?P<id_partida>\d+)/', views.PartidaView.as_view()),
+	url(r'^partida_questao/(?P<id_partida>\d+)/q/(?P<id_questao>\d+)', views.PartidaQuestaoView.as_view()),
 
 ]

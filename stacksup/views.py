@@ -15,6 +15,10 @@ from .models import Partida, SUQuestionLog
 
 from random import randint
 
+# mudar todos os auto_now_add 
+# timezone.now
+from django.utils import timezone
+
 # Create your views here.
 class Index(View):
 
@@ -135,11 +139,11 @@ class NovaPartida(View):
 				pergunta = Pergunta.objects.filter(tipo_pergunta_ou_resposta=categoria_questao).all()
 				# escolho uma
 
-				print("pergunta----------")
-				print(categorias_existentes)
-				print(categoria_questao)
-				print(pergunta)
-				print("pergunta----------")
+				# print("pergunta----------")
+				# print(categorias_existentes)
+				# print(categoria_questao)
+				# print(pergunta)
+				# print("pergunta----------")
 
 				qual_pergunta = randint(0, (len(pergunta)-1))
 				# seleciono a escolhida
@@ -204,6 +208,7 @@ class NovaPartida(View):
 		return HttpResponseRedirect(url_to_go)
 
 
+# play da partida
 class PartidaView(View):
 
 	def get(self, request, id_partida):
@@ -213,7 +218,205 @@ class PartidaView(View):
 		if request.user.is_authenticated:
 
 			partida = Partida.objects.filter(id=id_partida, usuario_partida=request.user).first()
+			
+			# nao tem partida, vai pra 
+			if partida == None:
+				return HttpResponseRedirect("/nova_partida")
 
+
+			if not partida.aberta :
+				return HttpResponseRedirect("/nova_partida")
+
+
+			# partida existe, vou setar todas as anteriores como abertas = False
+			partidas_para_fechar = Partida.objects.filter(usuario_partida=request.user).exclude(id=id_partida)
+			for partida_para_fechar in partidas_para_fechar:
+				partida_para_fechar.aberta = False
+				partida_para_fechar.save()
+
+
+			
+				
+		else:
+			return HttpResponseRedirect("/")
+		
+		
+		values['partida'] = partida
+		values['id_partida'] = id_partida
+
+		values['categorias'] = (
+			partida.q1_categoria_1.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q1_categoria_2.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q1_categoria_3.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q1_categoria_4.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q1_categoria_5.questao.pergunta.tipo_pergunta_ou_resposta,
+
+			partida.q2_categoria_1.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q2_categoria_2.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q2_categoria_3.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q2_categoria_4.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q2_categoria_5.questao.pergunta.tipo_pergunta_ou_resposta,
+
+			partida.q3_categoria_1.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q3_categoria_2.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q3_categoria_3.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q3_categoria_4.questao.pergunta.tipo_pergunta_ou_resposta,
+			partida.q3_categoria_5.questao.pergunta.tipo_pergunta_ou_resposta,
+
+			)
+
+		return render(
+		request,
+		'stacksup/partida.html',
+		context=values,
+		)
+
+
+# perguntas
+class PartidaQuestaoView(View):
+
+	def podeJogar(self, request, id_partida, id_questao):
+		if request.user.is_authenticated:
+
+			partida = Partida.objects.filter(id=id_partida, usuario_partida=request.user).first()
+
+			respondeu = 0
+			# pegando a questao
+			# comeca no 1
+			# vai ate 15
+			qual_questao = partida.q1_categoria_1
+
+			if partida.q1_categoria_1.resposta != None:
+				if respondeu == 0:
+					respondeu = 1
+					qual_questao = partida.q1_categoria_2
+			if partida.q1_categoria_2.resposta != None:
+				if respondeu == 1:
+					respondeu = 2
+					qual_questao = partida.q1_categoria_3
+
+			if partida.q1_categoria_3.resposta != None:
+				if respondeu == 2:
+					respondeu = 3
+					qual_questao = partida.q1_categoria_4
+
+			if partida.q1_categoria_4.resposta != None:
+				if respondeu == 3:
+					respondeu = 4
+					qual_questao = partida.q1_categoria_5
+
+			if partida.q1_categoria_5.resposta != None:
+				if respondeu == 4:
+					respondeu = 5
+					qual_questao = partida.q2_categoria_1
+
+			if partida.q2_categoria_1.resposta != None:
+				if respondeu == 5:
+					respondeu = 6
+					qual_questao = partida.q2_categoria_2
+
+			if partida.q2_categoria_2.resposta != None:
+				if respondeu == 6:
+					respondeu = 7
+					qual_questao = partida.q2_categoria_3
+
+			if partida.q2_categoria_3.resposta != None:
+				if respondeu == 7:
+					respondeu = 8
+					qual_questao = partida.q2_categoria_4
+
+			if partida.q2_categoria_4.resposta != None:
+				if respondeu == 8:
+					respondeu = 9
+					qual_questao = partida.q2_categoria_5
+
+			if partida.q2_categoria_5.resposta != None:
+				if respondeu == 9:
+					respondeu = 10
+					qual_questao = partida.q3_categoria_1
+
+			if partida.q3_categoria_1.resposta != None:
+				if respondeu == 10:
+					respondeu = 11
+					qual_questao = partida.q3_categoria_2
+
+			if partida.q3_categoria_2.resposta != None:
+				if respondeu == 11:
+					respondeu = 12
+					qual_questao = partida.q3_categoria_3
+
+			if partida.q3_categoria_3.resposta != None:
+				if respondeu == 12:
+					respondeu = 13
+					qual_questao = partida.q3_categoria_4
+
+			if partida.q3_categoria_4.resposta != None:
+				if respondeu == 13:
+					respondeu = 14
+					qual_questao = partida.q3_categoria_5
+
+			if partida.q3_categoria_5.resposta != None:
+				if respondeu == 14:
+					respondeu = 15
+					qual_questao = None
+
+
+
+			# print("AAA------------")
+
+			# print(int(id_questao) == (respondeu + 1))
+			# print(int(id_questao))
+			# print((respondeu + 1))
+
+
+			# se eu posso responder essa pergunta
+			if int(id_questao) == (respondeu + 1) and qual_questao != None:
+				print("ASDASD")
+				return (True, (respondeu + 1), qual_questao)
+			else:
+				return (False, (respondeu+1))
+
+				
+		else:
+			return (False, 0)
+
+	def get(self, request, id_partida, id_questao):
+
+		values = {}
+
+
+		if request.user.is_authenticated:
+
+			partida = Partida.objects.filter(id=id_partida, usuario_partida=request.user).first()
+
+			# pegando a questao
+			# comeca no 1
+			# vai ate 15
+			retornao = self.podeJogar(request, id_partida, id_questao)
+
+			# se pode jogar
+			if retornao[0]:
+				values['questao'] = retornao[2]
+
+				respostas = retornao[2].questao.respostas.all()
+
+				values['respostas'] = respostas
+
+				values['partida_id'] = id_partida
+				values['qst_id'] = id_questao
+
+			# se nao pode
+			elif retornao[1] == 0:
+				
+
+				return HttpResponseRedirect("/" )
+			else:
+
+				return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]) )
+				
+
+
+			
 			# nao tem partida, vai pra 
 			if partida == None:
 				return HttpResponseRedirect("/nova_partida")
@@ -221,14 +424,138 @@ class PartidaView(View):
 		else:
 			return HttpResponseRedirect("/")
 		
-		
-		values['partida'] = partida
-
+		# print("ASDSADSAD")
+		# print(values)
 		return render(
 		request,
-		'stacksup/partida.html',
+		'stacksup/partida_questao.html',
 		context=values,
 		)
+
+	def post(self, request, id_partida, id_questao):
+		
+		# values = {}
+
+		if request.user.is_authenticated:
+
+			partida = Partida.objects.filter(id=id_partida, usuario_partida=request.user).first()
+
+			reposta_dada_pelo_user = request.POST.get('botao_resposta', False)
+
+
+			# pegando a questao
+			# comeca no 1
+			# vai ate 15
+			retornao = self.podeJogar(request, id_partida, id_questao)
+
+			if retornao[0]:
+				# values['questao'] = retornao[2]
+				respostas = retornao[2].questao.respostas.all()
+
+				for resposta in respostas:
+					narra = NarrativaString.objects.filter(resposta=resposta)
+					for idioma in narra:
+						# é a escolha do user
+						if idioma.narrativa == reposta_dada_pelo_user:
+							
+							# salvando
+							retornao[2].resposta = resposta
+							retornao[2].data_resposta = timezone.now()
+							retornao[2].save()
+
+
+							# verificando se resposta possui alguma referencia
+							referencias = resposta.referencias.all()
+							if referencias != None:
+								
+								# verificando se referencia é com a pergunta
+								for refe in referencias:
+									if refe.pergunta == retornao[2].questao.pergunta:
+										
+										# opa, resposta correta
+
+
+										# respondeu a 15 e acertou
+										if retornao[1] == 15:
+										
+											
+											partida.aberta = False
+											partida.save()
+
+											# dar pontos e moedas para o user
+											# acertou tudo, multiplica por 3
+											cart = Carteira.objects.filter(user=request.user).first()
+											quanto_moeda = partida.carteira_de_premiacao.moedas
+											quanto_moeda = quanto_moeda * 3
+
+											cart.moedas = cart.moedas + quanto_moeda
+											cart.save()
+
+											return HttpResponseRedirect("/")
+
+
+										# se ainda tem perguntas
+										if retornao[1]+1 <= 15:
+										
+											return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
+
+										
+
+								# resposta errada
+								partida.aberta = False
+								partida.save()
+
+								# dar ponsto para o user
+								cart = Carteira.objects.filter(user=request.user).first()
+								quanto_moeda = partida.carteira_de_premiacao.moedas
+								quanto_moeda = quanto_moeda * (retornao[1] % 5)
+
+								cart.moedas = cart.moedas + quanto_moeda
+								cart.save()
+
+								
+								return HttpResponseRedirect("/")
+							else:
+								# resposta errada
+
+								partida.aberta = False
+								partida.save()
+
+								# dar ponsto para o user
+								cart = Carteira.objects.filter(user=request.user).first()
+								quanto_moeda = partida.carteira_de_premiacao.moedas
+								quanto_moeda = quanto_moeda * (retornao[1] % 5)
+
+								cart.moedas = cart.moedas + quanto_moeda
+								cart.save()
+
+								return HttpResponseRedirect("/")
+
+							# # se ainda tem perguntas
+							# if retornao[1]+1 <= 15:
+							
+							# 	return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
+							# # se ja acabou
+							# else:
+							# 	partida.aberta = False
+							# 	partida.save()
+							# 	return HttpResponseRedirect("/")
+
+
+
+
+
+			elif retornao[1] <= 15:
+				return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]) )
+
+
+
+			# nao tem partida, vai pra 
+			if partida == None:
+				return HttpResponseRedirect("/nova_partida")
+				
+		else:
+			return HttpResponseRedirect("/")
 
 
 # aqui vao as view de logs, adicionar perguntas e regioes
@@ -279,18 +606,17 @@ class FabricaView(View):
 
 			regioes = Regiao.objects.all()
 
-			# logs
-			logs = []
-			partidas = Partida.objects.filter(usuario=request.user)
+			# logs das partidas
+			# logs = []
+			# partidas = Partida.objects.filter(usuario_partida=request.user, aberta=False)
 
-			try:
-				for partida in partidas:
-					log.append( partida.q1_categoria_1 )
+			# try:
+			# 	for partida in partidas:
+			# 		part_log = ()
+			# 		logs.append( part_log )
 
-				values['logs'] = logs
-
-			except Exception as e:
-				pass
+			# except Exception as e:
+			# 	raise
 
 			user = user.first()
 
@@ -304,6 +630,10 @@ class FabricaView(View):
 		values['questoes'] = qs
 
 		values['regioes'] = regioes
+
+		# fazer depois
+		# values['logs'] = logs
+
 
 
 		return render(

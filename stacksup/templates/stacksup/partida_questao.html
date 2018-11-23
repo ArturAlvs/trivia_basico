@@ -1,0 +1,99 @@
+{% extends "base_generic.html" %}
+
+
+{% block content %}
+
+    
+		
+    	<br/>
+    	<br/>
+
+    	{% if questao %}
+
+
+			<div class="card text-center 
+				{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+					bg-danger
+				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+					bg-success
+				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+					bg-dark
+				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+					bg-info
+				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}		
+					bg-primary
+				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+					bg-warning
+				{% endif %}
+			">
+			<div class="card-body">
+			<h5 class="card-title">
+				{{ questao.questao.pergunta }}
+			</h5>
+
+			</div>
+			<ul class="list-group list-group-flush">
+
+				<form action="/partida_questao/{{partida_id}}/q/{{qst_id}}/" method="post">
+   				{% csrf_token %}
+
+				{% for resposta in respostas %}
+
+				<li class="list-group-item
+				{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+						list-group-item-danger
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+						list-group-item-success
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+						list-group-item-dark
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+						list-group-item-info
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
+						list-group-item-primary
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+						list-group-item-warning
+
+					{% endif %}
+					">
+					
+					<button type="submit" class="btn w-100
+					{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+						btn-danger
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+						btn-success
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+						btn-dark
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+						btn-info
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
+						btn-primary
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+						btn-warning
+
+					{% endif %}
+					" name="botao_resposta" value="{{resposta}}">{{ resposta }}</button>
+					
+				</li>
+
+				{% endfor %}
+
+				</form>
+
+			</ul>
+			<div class="card-body">
+			<a href="#" class="card-link">Card link</a>
+			<a href="#" class="card-link">Another link</a>
+			</div>
+			</div>
+
+
+		{% endif %}
+
+    	
+
+
+
+
+
+
+{% endblock %}

@@ -6,65 +6,300 @@
     
     	Custo da partida: {{ partida.custo }}
 
-    	<br/><br/>
-    	Começar
+    	<br/>
+    	<br/>
+    	
+
+    	<a href="/partida_questao/{{id_partida}}/q/1">
+    		<span class="btn btn-link w-100 btn-link-comecar">Começar</span>
+    	</a>
 
 
-    	<br/><br/>
+    	<br/>
+    	<hr/>
+    	<hr/>
+
+    	<br/>
 
 
     	<ul class="list-group">
 			
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.0 == '0' %}
+				list-group-item-danger
+			{% elif categorias.0 == '1' %}
+				list-group-item-success
+			{% elif categorias.0 == '2' %}
+				list-group-item-dark
+			{% elif categorias.0 == '3' %}
+				list-group-item-info
+			{% elif categorias.0 == '4' %}
+				list-group-item-primary
+			{% elif categorias.0 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q1_categoria_1.questao.pergunta.categoria }}
+
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.1 == '0' %}
+				list-group-item-danger
+			{% elif categorias.1 == '1' %}
+				list-group-item-success
+			{% elif categorias.1 == '2' %}
+				list-group-item-dark
+			{% elif categorias.1 == '3' %}
+				list-group-item-info
+			{% elif categorias.1 == '4' %}
+				list-group-item-primary
+			{% elif categorias.1 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q1_categoria_2.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.2 == '0' %}
+				list-group-item-danger
+			{% elif categorias.2 == '1' %}
+				list-group-item-success
+			{% elif categorias.2 == '2' %}
+				list-group-item-dark
+			{% elif categorias.2 == '3' %}
+				list-group-item-info
+			{% elif categorias.2 == '4' %}
+				list-group-item-primary
+			{% elif categorias.2 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q1_categoria_3.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.3 == '0' %}
+				list-group-item-danger
+			{% elif categorias.3 == '1' %}
+				list-group-item-success
+			{% elif categorias.3 == '2' %}
+				list-group-item-dark
+			{% elif categorias.3 == '3' %}
+				list-group-item-info
+			{% elif categorias.3 == '4' %}
+				list-group-item-primary
+			{% elif categorias.3 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q1_categoria_4.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.4 == '0' %}
+				list-group-item-danger
+			{% elif categorias.4 == '1' %}
+				list-group-item-success
+			{% elif categorias.4 == '2' %}
+				list-group-item-dark
+			{% elif categorias.4 == '3' %}
+				list-group-item-info
+			{% elif categorias.4 == '4' %}
+				list-group-item-primary
+			{% elif categorias.4 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q1_categoria_5.questao.pergunta.categoria }}
 			</li>
 
 			<hr/>
 
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.5 == '0' %}
+				list-group-item-danger
+			{% elif categorias.5 == '1' %}
+				list-group-item-success
+			{% elif categorias.5 == '2' %}
+				list-group-item-dark
+			{% elif categorias.5 == '3' %}
+				list-group-item-info
+			{% elif categorias.5 == '4' %}
+				list-group-item-primary
+			{% elif categorias.5 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q2_categoria_1.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.6 == '0' %}
+				list-group-item-danger
+			{% elif categorias.6 == '1' %}
+				list-group-item-success
+			{% elif categorias.6 == '2' %}
+				list-group-item-dark
+			{% elif categorias.6 == '3' %}
+				list-group-item-info
+			{% elif categorias.6 == '4' %}
+				list-group-item-primary
+			{% elif categorias.6 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q2_categoria_2.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.7 == '0' %}
+				list-group-item-danger
+			{% elif categorias.7 == '1' %}
+				list-group-item-success
+			{% elif categorias.7 == '2' %}
+				list-group-item-dark
+			{% elif categorias.7 == '3' %}
+				list-group-item-info
+			{% elif categorias.7 == '4' %}
+				list-group-item-primary
+			{% elif categorias.7 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q2_categoria_3.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.8 == '0' %}
+				list-group-item-danger
+			{% elif categorias.8 == '1' %}
+				list-group-item-success
+			{% elif categorias.8 == '2' %}
+				list-group-item-dark
+			{% elif categorias.8 == '3' %}
+				list-group-item-info
+			{% elif categorias.8 == '4' %}
+				list-group-item-primary
+			{% elif categorias.8 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q2_categoria_4.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.9 == '0' %}
+				list-group-item-danger
+			{% elif categorias.9 == '1' %}
+				list-group-item-success
+			{% elif categorias.9 == '2' %}
+				list-group-item-dark
+			{% elif categorias.9 == '3' %}
+				list-group-item-info
+			{% elif categorias.9 == '4' %}
+				list-group-item-primary
+			{% elif categorias.9 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q2_categoria_5.questao.pergunta.categoria }}
 			</li>
 
 
 			<hr/>
 
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.10 == '0' %}
+				list-group-item-danger
+			{% elif categorias.10 == '1' %}
+				list-group-item-success
+			{% elif categorias.10 == '2' %}
+				list-group-item-dark
+			{% elif categorias.10 == '3' %}
+				list-group-item-info
+			{% elif categorias.10 == '4' %}
+				list-group-item-primary
+			{% elif categorias.10 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q3_categoria_1.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.11 == '0' %}
+				list-group-item-danger
+			{% elif categorias.11 == '1' %}
+				list-group-item-success
+			{% elif categorias.11 == '2' %}
+				list-group-item-dark
+			{% elif categorias.11 == '3' %}
+				list-group-item-info
+			{% elif categorias.11 == '4' %}
+				list-group-item-primary
+			{% elif categorias.11 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q3_categoria_2.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.12 == '0' %}
+				list-group-item-danger
+			{% elif categorias.12 == '1' %}
+				list-group-item-success
+			{% elif categorias.12 == '2' %}
+				list-group-item-dark
+			{% elif categorias.12 == '3' %}
+				list-group-item-info
+			{% elif categorias.12 == '4' %}
+				list-group-item-primary
+			{% elif categorias.12 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q3_categoria_3.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.13 == '0' %}
+				list-group-item-danger
+			{% elif categorias.13 == '1' %}
+				list-group-item-success
+			{% elif categorias.13 == '2' %}
+				list-group-item-dark
+			{% elif categorias.13 == '3' %}
+				list-group-item-info
+			{% elif categorias.13 == '4' %}
+				list-group-item-primary
+			{% elif categorias.13 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q3_categoria_4.questao.pergunta.categoria }}
 			</li>
-			<li class="list-group-item">
+			<li class="list-group-item
+			{% if categorias.14 == '0' %}
+				list-group-item-danger
+			{% elif categorias.14 == '1' %}
+				list-group-item-success
+			{% elif categorias.14 == '2' %}
+				list-group-item-dark
+			{% elif categorias.14 == '3' %}
+				list-group-item-info
+			{% elif categorias.14 == '4' %}
+				list-group-item-primary
+			{% elif categorias.14 == '5' %}
+				list-group-item-warning
+
+			{% endif %}
+			">
 				{{ partida.q3_categoria_5.questao.pergunta.categoria }}
 			</li>
 
