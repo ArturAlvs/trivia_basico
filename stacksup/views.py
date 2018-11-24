@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect
 
 from .models import Partida, SUQuestionLog
 
-from random import randint
+from random import randint, shuffle
 
 # mudar todos os auto_now_add 
 # timezone.now
@@ -407,7 +407,10 @@ class PartidaQuestaoView(View):
 			if retornao[0]:
 				values['questao'] = retornao[2]
 
-				respostas = retornao[2].questao.respostas.all()
+				respostas = list(retornao[2].questao.respostas.all())
+
+				# mudar ordem aqui
+				shuffle(respostas)
 
 				values['respostas'] = respostas
 
@@ -560,7 +563,7 @@ class PartidaQuestaoView(View):
 					# dar ponsto para o user
 					cart = Carteira.objects.filter(user=request.user).first()
 					quanto_moeda = partida.carteira_de_premiacao.moedas
-					quanto_moeda = quanto_moeda * (retornao[1] % 5)
+					quanto_moeda = quanto_moeda * int(retornao[1] / 5)
 
 					quanto_ponto = partida.carteira_de_premiacao.pontos * int(retornao[1] / 5)
 
