@@ -76,7 +76,7 @@
 						" name="botao_resposta" value="{{resposta}}">{{ resposta }}
 
 						{% if resposta == resposta_user %}
-							<span class="badge badge-dark">USER</span>
+							<span class="badge badge-dark">Voce</span>
 						{% endif %}
 						
 						{% if resposta == resposta_certa %}
@@ -94,7 +94,7 @@
 				<div class="card-body">
 
 					<a href="/partida_questao/{{partida_id}}/q/{{questao_id}}">
-						<span class="badge badge-dark">Continuar</span>
+						<span class="badge badge-dark w-100">Continuar</span>
 					</a>
 
 					{% if is_prototipo %}
