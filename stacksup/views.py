@@ -514,7 +514,7 @@ class PartidaQuestaoView(View):
 
 						# dar pontos e moedas para o user
 						# acertou tudo, multiplica por 3
-						cart = Carteira.objects.select_related('user', 'carteira_de_premiacao').filter(user=request.user).first()
+						cart = Carteira.objects.select_related('user').filter(user=request.user).first()
 						quanto_moeda = partida.carteira_de_premiacao.moedas
 						quanto_moeda = quanto_moeda * 3
 
@@ -561,7 +561,7 @@ class PartidaQuestaoView(View):
 					partida.save()
 
 					# dar ponsto para o user
-					cart = Carteira.objects.filter(user=request.user).first()
+					cart = Carteira.objects.select_related('user').filter(user=request.user).first()
 					quanto_moeda = partida.carteira_de_premiacao.moedas
 					quanto_moeda = quanto_moeda * int(retornao[1] / 5)
 
