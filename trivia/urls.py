@@ -32,7 +32,7 @@ urlpatterns = [
 
     url(r'^login/$', Login.as_view()),
     url(r'^logout/$', Logout.as_view()),
-    # url(r'^signup/$', Register.as_view()),
+    url(r'^signup/$', Register.as_view()),
     url(r'^cadastro/$', UpdateCadastro.as_view()),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -121,6 +121,7 @@ class NovaPartida(View):
 		
 
 		questoes_escolhidas_p_partida = []
+		perguntas_escolhidas_p_partida = []
 		categorias_existentes = ["Artes", "Ciencias", "Cotidiano", "Esportes", "Geografia", "Historia"]
 		for questao_grupo in range(3):
 			
@@ -135,25 +136,24 @@ class NovaPartida(View):
 				# adiciona para nao escoler mais
 				categorias_questoes.append(categoria_questao)
 
-				questao = None
-				while questao == None or questao in questoes_escolhidas_p_partida:
-					# pego as perguntas
-					pergunta = Pergunta.objects.filter(tipo_pergunta_ou_resposta=categoria_questao).all()
-					# escolho uma
 
-					# print("pergunta----------")
-					# print(categorias_existentes)
-					# print(categoria_questao)
-					# print(pergunta)
-					# print("pergunta----------")
+				pergunta = Pergunta.objects.filter(tipo_pergunta_ou_resposta=categoria_questao).all()
 
+				qual_pergunta = randint(0, (len(pergunta)-1))
+				qual_pergunta = pergunta[qual_pergunta]
+
+				while qual_pergunta in perguntas_escolhidas_p_partida:
 					qual_pergunta = randint(0, (len(pergunta)-1))
-					# seleciono a escolhida
-					pergunta = pergunta[qual_pergunta]
+					qual_pergunta = pergunta[qual_pergunta]
+				perguntas_escolhidas_p_partida.append(qual_pergunta)
 
-					questao = Questao.objects.filter(pergunta=pergunta).first()
 
-					questoes_escolhidas_p_partida.append(questao)
+		for perg_p_partida in perguntas_escolhidas_p_partida:
+			questoes = Questao.objects.filter(pergunta=perg_p_partida).all()
+			qual_questao = randint(0, (len(questoes)-1))
+			qual_questao = questoes[qual_questao]
+			questoes_escolhidas_p_partida.append(qual_questao)
+
 
 
 		q1_categoria_1 = SUQuestionLog(questao=questoes_escolhidas_p_partida[0])
@@ -376,7 +376,6 @@ class PartidaQuestaoView(View):
 
 			# se eu posso responder essa pergunta
 			if int(id_questao) == (respondeu + 1) and qual_questao != None:
-				print("ASDASD")
 				return (True, (respondeu + 1), qual_questao)
 			else:
 				return (False, (respondeu+1))
@@ -512,7 +511,7 @@ class PartidaQuestaoView(View):
 
 						# dar pontos e moedas para o user
 						# acertou tudo, multiplica por 3
-						cart = Carteira.objects.filter(user=request.user).first()
+						cart = Carteira.objects.select_related('user', 'carteira_de_premiacao').filter(user=request.user).first()
 						quanto_moeda = partida.carteira_de_premiacao.moedas
 						quanto_moeda = quanto_moeda * 3
 
@@ -563,7 +562,7 @@ class PartidaQuestaoView(View):
 					quanto_moeda = partida.carteira_de_premiacao.moedas
 					quanto_moeda = quanto_moeda * (retornao[1] % 5)
 
-					quanto_ponto = partida.carteira_de_premiacao.pontos * (retornao[1] % 5)
+					quanto_ponto = partida.carteira_de_premiacao.pontos * int(retornao[1] / 5)
 
 					cart.moedas = cart.moedas + quanto_moeda
 					cart.pontos = cart.pontos + quanto_ponto
