@@ -8,86 +8,197 @@
     	<br/>
     	<br/>
 
-    	{% if questao %}
+    	{% if pos_jogo %}
+
+    		<br/><br/>
+
+    		{% if pos_jogo %}
 
 
-			<div class="card text-center 
-				{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
-					bg-danger
-				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
-					bg-success
-				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
-					bg-dark
-				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
-					bg-info
-				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}		
-					bg-primary
-				{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
-					bg-warning
-				{% endif %}
-			">
-			<div class="card-body">
-			<h5 class="card-title">
-				{{ questao.questao.pergunta }}
-			</h5>
-
-			</div>
-			<ul class="list-group list-group-flush">
-
-				<form action="/partida_questao/{{partida_id}}/q/{{qst_id}}/" method="post">
-   				{% csrf_token %}
-
-				{% for resposta in respostas %}
-
-				<li class="list-group-item
-				{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
-						list-group-item-danger
-					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
-						list-group-item-success
-					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
-						list-group-item-dark
-					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
-						list-group-item-info
-					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
-						list-group-item-primary
-					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
-						list-group-item-warning
-
+				<div class="card text-center 
+					{% if pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+						bg-danger
+					{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+						bg-success
+					{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+						bg-dark
+					{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+						bg-info
+					{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}		
+						bg-primary
+					{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+						bg-warning
 					{% endif %}
-					">
-					
-					<button type="submit" class="btn w-100
+				">
+				<div class="card-body">
+				<h5 class="card-title">
+					{{ pos_jogo.questao.pergunta }}
+
+				</h5>
+
+				</div>
+				<ul class="list-group list-group-flush">
+
+					{% for resposta in respostas %}
+
+					<li class="list-group-item
+					{% if pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+							list-group-item-danger
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+							list-group-item-success
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+							list-group-item-dark
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+							list-group-item-info
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
+							list-group-item-primary
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+							list-group-item-warning
+
+						{% endif %}
+						">
+						
+						<button class="btn w-100
+						{% if pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+							btn-danger
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+							btn-success
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+							btn-dark
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+							btn-info
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
+							btn-primary
+						{% elif pos_jogo.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+							btn-warning
+
+						{% endif %}
+						" name="botao_resposta" value="{{resposta}}">{{ resposta }}
+
+						{% if resposta == resposta_user %}
+							<span class="badge badge-dark">USER</span>
+						{% endif %}
+						
+						{% if resposta == resposta_certa %}
+						<span class="badge badge-success">CERTA</span>
+
+						{% endif %}
+
+					</button>
+						
+					</li>
+
+					{% endfor %}
+
+				</ul>
+				<div class="card-body">
+
+					<a href="/partida_questao/{{partida_id}}/q/{{questao_id}}">
+						<span class="badge badge-dark">Continuar</span>
+					</a>
+
+					{% if is_prototipo %}
+						<!-- {{ pos_jogo.questao.pergunta }} -->
+						<span class="badge badge-secondary">Prototipo</span>
+					{%endif%}
+				</div>
+				</div>
+
+
+			{% endif %}
+
+
+
+    	{% else %}
+
+
+	    	{% if questao %}
+
+
+				<div class="card text-center 
 					{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
-						btn-danger
+						bg-danger
 					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
-						btn-success
+						bg-success
 					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
-						btn-dark
+						bg-dark
 					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
-						btn-info
-					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
-						btn-primary
+						bg-info
+					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}		
+						bg-primary
 					{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
-						btn-warning
-
+						bg-warning
 					{% endif %}
-					" name="botao_resposta" value="{{resposta}}">{{ resposta }}</button>
-					
-				</li>
+				">
+				<div class="card-body">
+				<h5 class="card-title">
+					{{ questao.questao.pergunta }}
 
-				{% endfor %}
+				</h5>
 
-				</form>
+				</div>
+				<ul class="list-group list-group-flush">
 
-			</ul>
-			<div class="card-body">
-			<a href="#" class="card-link">Card link</a>
-			<a href="#" class="card-link">Another link</a>
-			</div>
-			</div>
+					<form action="/partida_questao/{{partida_id}}/q/{{qst_id}}/" method="post">
+	   				{% csrf_token %}
+
+					{% for resposta in respostas %}
+
+					<li class="list-group-item
+					{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+							list-group-item-danger
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+							list-group-item-success
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+							list-group-item-dark
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+							list-group-item-info
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
+							list-group-item-primary
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+							list-group-item-warning
+
+						{% endif %}
+						">
+						
+						<button type="submit" class="btn w-100
+						{% if questao.questao.pergunta.tipo_pergunta_ou_resposta == '0' %}
+							btn-danger
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '1' %}
+							btn-success
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '2' %}
+							btn-dark
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '3' %}
+							btn-info
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '4' %}
+							btn-primary
+						{% elif questao.questao.pergunta.tipo_pergunta_ou_resposta == '5' %}
+							btn-warning
+
+						{% endif %}
+						" name="botao_resposta" value="{{resposta}}">{{ resposta }}</button>
+						
+					</li>
+
+					{% endfor %}
+
+					</form>
+
+				</ul>
+				<div class="card-body">
+
+					{% if is_prototipo %}
+						<!-- {{ questao.questao.pergunta }} -->
+						<span class="badge badge-secondary">Prototipo</span>
+					{%endif%}
+				</div>
+				</div>
 
 
-		{% endif %}
+			{% endif %}
+
+
+    	{% endif %}
 
     	
 

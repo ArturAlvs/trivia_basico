@@ -26,12 +26,14 @@ class SUQuestionLog(models.Model):
 	data_resposta = models.DateTimeField('data_resposta', blank=True, null=True)
 
 	def __str__(self):
-		narrativa = self.id
-		try:
-			narrativa = NarrativaString.objects.filter(pergunta=self.questao.pergunta).first()
-			narrativa = narrativa.narrativa
-		except Exception as e:
-			raise
+		narrativa = str(self.id)
+		# try:
+		# 	# narrativa = NarrativaString.objects.filter(pergunta=self.questao.pergunta).first()
+		# 	q = self.questao.pergunta
+		# 	narrativa = NarrativaString.objects.select_related('pergunta').filter(pergunta=q).first()
+		# 	narrativa = narrativa.narrativa
+		# except Exception as e:
+		# 	pass
 	
 		return narrativa
 

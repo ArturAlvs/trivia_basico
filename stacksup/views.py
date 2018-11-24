@@ -135,23 +135,25 @@ class NovaPartida(View):
 				# adiciona para nao escoler mais
 				categorias_questoes.append(categoria_questao)
 
-				# pego as perguntas
-				pergunta = Pergunta.objects.filter(tipo_pergunta_ou_resposta=categoria_questao).all()
-				# escolho uma
+				questao = None
+				while questao == None or questao in questoes_escolhidas_p_partida:
+					# pego as perguntas
+					pergunta = Pergunta.objects.filter(tipo_pergunta_ou_resposta=categoria_questao).all()
+					# escolho uma
 
-				# print("pergunta----------")
-				# print(categorias_existentes)
-				# print(categoria_questao)
-				# print(pergunta)
-				# print("pergunta----------")
+					# print("pergunta----------")
+					# print(categorias_existentes)
+					# print(categoria_questao)
+					# print(pergunta)
+					# print("pergunta----------")
 
-				qual_pergunta = randint(0, (len(pergunta)-1))
-				# seleciono a escolhida
-				pergunta = pergunta[qual_pergunta]
+					qual_pergunta = randint(0, (len(pergunta)-1))
+					# seleciono a escolhida
+					pergunta = pergunta[qual_pergunta]
 
-				questao = Questao.objects.filter(pergunta=pergunta).first()
+					questao = Questao.objects.filter(pergunta=pergunta).first()
 
-				questoes_escolhidas_p_partida.append(questao)
+					questoes_escolhidas_p_partida.append(questao)
 
 
 		q1_categoria_1 = SUQuestionLog(questao=questoes_escolhidas_p_partida[0])
@@ -280,6 +282,9 @@ class PartidaQuestaoView(View):
 
 			partida = Partida.objects.filter(id=id_partida, usuario_partida=request.user).first()
 
+			if not partida.aberta:
+				return (False, 0)
+
 			respondeu = 0
 			# pegando a questao
 			# comeca no 1
@@ -389,6 +394,11 @@ class PartidaQuestaoView(View):
 
 			partida = Partida.objects.filter(id=id_partida, usuario_partida=request.user).first()
 
+			# nao tem partida, vai pra 
+			if partida == None:
+				return HttpResponseRedirect("/nova_partida")
+
+
 			# pegando a questao
 			# comeca no 1
 			# vai ate 15
@@ -404,6 +414,9 @@ class PartidaQuestaoView(View):
 
 				values['partida_id'] = id_partida
 				values['qst_id'] = id_questao
+				if PrototipoQuestao.objects.filter(questao=retornao[2].questao).exists():
+					values['is_prototipo'] = "partida"
+				
 
 			# se nao pode
 			elif retornao[1] == 0:
@@ -414,12 +427,6 @@ class PartidaQuestaoView(View):
 
 				return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]) )
 				
-
-
-			
-			# nao tem partida, vai pra 
-			if partida == None:
-				return HttpResponseRedirect("/nova_partida")
 				
 		else:
 			return HttpResponseRedirect("/")
@@ -448,98 +455,256 @@ class PartidaQuestaoView(View):
 			# vai ate 15
 			retornao = self.podeJogar(request, id_partida, id_questao)
 
+			# posso jogar essa questao
 			if retornao[0]:
 				# values['questao'] = retornao[2]
 				respostas = retornao[2].questao.respostas.all()
 
+
+				# sdasdas
+				resp_certa = None
+				resp_user= None
+				# sdasdas
+
+				# loop pelas possiveis respostas
 				for resposta in respostas:
+
+
+					# sdasdas
+					todas_referencias = resposta.referencias.all()
+					for refefe in todas_referencias:
+						if refefe.pergunta == retornao[2].questao.pergunta:
+							resp_certa = resposta
+							break
+
+					# sdasdas
+
+
+					
+					# qual resposta do usuario?
 					narra = NarrativaString.objects.filter(resposta=resposta)
 					for idioma in narra:
 						# é a escolha do user
 						if idioma.narrativa == reposta_dada_pelo_user:
+						
+							# sdasdas
+
+							resp_user = resposta
+							break
+
+				# ja achei a certa e a do user
+
+				# salvando
+				retornao[2].resposta = resp_user
+				retornao[2].data_resposta = timezone.now()
+				retornao[2].save()
+
+				# user ganhou
+				if resp_user == resp_certa:
+					
+
+					# respondeu a 15 e acertou
+					if retornao[1] == 15:
+						
 							
-							# salvando
-							retornao[2].resposta = resposta
-							retornao[2].data_resposta = timezone.now()
-							retornao[2].save()
+						partida.aberta = False
+						partida.save()
+
+						# dar pontos e moedas para o user
+						# acertou tudo, multiplica por 3
+						cart = Carteira.objects.filter(user=request.user).first()
+						quanto_moeda = partida.carteira_de_premiacao.moedas
+						quanto_moeda = quanto_moeda * 3
+
+						quanto_ponto = partida.carteira_de_premiacao.pontos * 3
+
+						cart.moedas = cart.moedas + quanto_moeda
+						cart.pontos = cart.pontos + quanto_ponto
+
+						cart.save()
+
+						return HttpResponseRedirect("/")
 
 
-							# verificando se resposta possui alguma referencia
-							referencias = resposta.referencias.all()
-							if referencias != None:
+					# se ainda tem perguntas
+					if retornao[1]+1 <= 15:
+					
+						# return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
+						values = {}
+						values['pos_jogo'] = retornao[2]
+						values['respostas'] = retornao[2].questao.respostas.all()
+
+						values['resposta_user'] = resp_user
+						values['resposta_certa'] = resp_certa
+
+						values['partida_id'] = id_partida
+						values['questao_id'] = id_questao
+
+
+						if PrototipoQuestao.objects.filter(questao=retornao[2].questao).exists():
+							values['is_prototipo'] = "partida"
+
+						return render(
+							request,
+							'stacksup/partida_questao.html',
+							context=values,
+						)
+
+				# errou
+				else:
+					# resposta errada
+					# resposta nem tem referencias
+
+					partida.aberta = False
+					partida.save()
+
+					# dar ponsto para o user
+					cart = Carteira.objects.filter(user=request.user).first()
+					quanto_moeda = partida.carteira_de_premiacao.moedas
+					quanto_moeda = quanto_moeda * (retornao[1] % 5)
+
+					quanto_ponto = partida.carteira_de_premiacao.pontos * (retornao[1] % 5)
+
+					cart.moedas = cart.moedas + quanto_moeda
+					cart.pontos = cart.pontos + quanto_ponto
+					cart.save()
+
+					# return HttpResponseRedirect("/")
+					values = {}
+					values['pos_jogo'] = retornao[2]
+					values['respostas'] = retornao[2].questao.respostas.all()
+
+					values['resposta_user'] = resp_user
+					values['resposta_certa'] = resp_certa
+
+					values['partida_id'] = id_partida
+					values['questao_id'] = id_questao
+
+					if PrototipoQuestao.objects.filter(questao=retornao[2].questao).exists():
+						values['is_prototipo'] = "partida"
+
+					return render(
+						request,
+						'stacksup/partida_questao.html',
+						context=values,
+					)
+
+
+							# sdasdas
+							
+							# # salvando
+							# retornao[2].resposta = resposta
+							# retornao[2].data_resposta = timezone.now()
+							# retornao[2].save()
+
+
+							# # verificando se resposta possui alguma referencia
+							# # ou seja, se é verdadeira
+							# referencias = resposta.referencias.all()
+							# print("referencias-------------")
+							# print(referencias)
+							# if referencias:
 								
-								# verificando se referencia é com a pergunta
-								for refe in referencias:
-									if refe.pergunta == retornao[2].questao.pergunta:
+							# 	# verificando se referencia é com a pergunta
+							# 	for refe in referencias:
+							# 		if refe.pergunta == retornao[2].questao.pergunta:
 										
-										# opa, resposta correta
+							# 			# opa, resposta correta
 
 
-										# respondeu a 15 e acertou
-										if retornao[1] == 15:
+							# 			# respondeu a 15 e acertou
+							# 			if retornao[1] == 15:
 										
 											
-											partida.aberta = False
-											partida.save()
+							# 				partida.aberta = False
+							# 				partida.save()
 
-											# dar pontos e moedas para o user
-											# acertou tudo, multiplica por 3
-											cart = Carteira.objects.filter(user=request.user).first()
-											quanto_moeda = partida.carteira_de_premiacao.moedas
-											quanto_moeda = quanto_moeda * 3
+							# 				# dar pontos e moedas para o user
+							# 				# acertou tudo, multiplica por 3
+							# 				cart = Carteira.objects.filter(user=request.user).first()
+							# 				quanto_moeda = partida.carteira_de_premiacao.moedas
+							# 				quanto_moeda = quanto_moeda * 3
 
-											cart.moedas = cart.moedas + quanto_moeda
-											cart.save()
+							# 				cart.moedas = cart.moedas + quanto_moeda
+							# 				cart.save()
 
-											return HttpResponseRedirect("/")
+							# 				return HttpResponseRedirect("/")
 
 
-										# se ainda tem perguntas
-										if retornao[1]+1 <= 15:
+							# 			# se ainda tem perguntas
+							# 			if retornao[1]+1 <= 15:
 										
-											return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
+							# 				# return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
+							# 				values = {}
+							# 				values['pos_jogo'] = retornao[2]
 
-								# resposta errada
-								partida.aberta = False
-								partida.save()
+							# 				values['respostas'] = retornao[2].questao.respostas.all()
+							# 				if PrototipoQuestao.objects.filter(questao=retornao[2].questao).exists():
+							# 					values['is_prototipo'] = "partida"
+							# 				return render(
+							# 					request,
+							# 					'stacksup/partida_questao.html',
+							# 					context=values,
+							# 				)
 
-								# dar ponsto para o user
-								cart = Carteira.objects.filter(user=request.user).first()
-								quanto_moeda = partida.carteira_de_premiacao.moedas
-								quanto_moeda = quanto_moeda * (retornao[1] % 5)
-
-								cart.moedas = cart.moedas + quanto_moeda
-								cart.save()
-
-								
-								return HttpResponseRedirect("/")
-							else:
-								# resposta errada
-
-								partida.aberta = False
-								partida.save()
-
-								# dar ponsto para o user
-								cart = Carteira.objects.filter(user=request.user).first()
-								quanto_moeda = partida.carteira_de_premiacao.moedas
-								quanto_moeda = quanto_moeda * (retornao[1] % 5)
-
-								cart.moedas = cart.moedas + quanto_moeda
-								cart.save()
-
-								return HttpResponseRedirect("/")
-
-							# # se ainda tem perguntas
-							# if retornao[1]+1 <= 15:
-							
-							# 	return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
-							# # se ja acabou
-							# else:
+							# 	# resposta errada
+							# 	# resposta possui referencia mas não para a pergunta atual
 							# 	partida.aberta = False
 							# 	partida.save()
-							# 	return HttpResponseRedirect("/")
 
-			elif retornao[1] <= 15:
+							# 	# dar ponsto para o user
+							# 	cart = Carteira.objects.filter(user=request.user).first()
+							# 	quanto_moeda = partida.carteira_de_premiacao.moedas
+							# 	quanto_moeda = quanto_moeda * (retornao[1] % 5)
+
+							# 	cart.moedas = cart.moedas + quanto_moeda
+							# 	cart.save()
+
+								
+							# 	# return HttpResponseRedirect("/")
+							# 	values = {}
+							# 	values['pos_jogo'] = 1
+							# 	return render(
+							# 		request,
+							# 		'stacksup/partida_questao.html',
+							# 		context=values,
+							# 	)
+							# else:
+							# 	# resposta errada
+							# 	# resposta nem tem referencias
+
+							# 	partida.aberta = False
+							# 	partida.save()
+
+							# 	# dar ponsto para o user
+							# 	cart = Carteira.objects.filter(user=request.user).first()
+							# 	quanto_moeda = partida.carteira_de_premiacao.moedas
+							# 	quanto_moeda = quanto_moeda * (retornao[1] % 5)
+
+							# 	cart.moedas = cart.moedas + quanto_moeda
+							# 	cart.save()
+
+							# 	# return HttpResponseRedirect("/")
+							# 	values = {}
+							# 	values['pos_jogo'] = 1
+							# 	return render(
+							# 		request,
+							# 		'stacksup/partida_questao.html',
+							# 		context=values,
+							# 	)
+
+							# # # se ainda tem perguntas
+							# # if retornao[1]+1 <= 15:
+							
+							# # 	return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]+1) )
+							# # # se ja acabou
+							# # else:
+							# # 	partida.aberta = False
+							# # 	partida.save()
+							# # 	return HttpResponseRedirect("/")
+
+			# não pode jogar essa questao, mas pode alguma
+			elif retornao[1] > 0 and retornao[1] <= 15:
 				return HttpResponseRedirect("/partida_questao/"+ id_partida +"/q/"+ str(retornao[1]) )
 
 			# nao tem partida, vai pra 
@@ -599,16 +764,16 @@ class FabricaView(View):
 			regioes = Regiao.objects.all()
 
 			# logs das partidas
-			# logs = []
-			# partidas = Partida.objects.filter(usuario_partida=request.user, aberta=False)
+			logs = []
+			partidas = Partida.objects.select_related('usuario_partida').filter(usuario_partida=request.user).order_by('-id')
 
-			# try:
-			# 	for partida in partidas:
-			# 		part_log = ()
-			# 		logs.append( part_log )
+			try:
+				for partida in partidas:
+					# part_log = (partida)
+					logs.append( partida )
 
-			# except Exception as e:
-			# 	raise
+			except Exception as e:
+				raise
 
 			user = user.first()
 
@@ -624,7 +789,7 @@ class FabricaView(View):
 		values['regioes'] = regioes
 
 		# fazer depois
-		# values['logs'] = logs
+		values['logs'] = logs
 
 
 
@@ -752,23 +917,23 @@ class FabricaView(View):
 
 
 		# criando regioes
-		elif nomeDaRegiao != False:
+		# elif nomeDaRegiao != False:
 
-			regiao_pai_nome = request.POST.get('regiaoFormControlSelect', False)
+		# 	regiao_pai_nome = request.POST.get('regiaoFormControlSelect', False)
 			
-			try:
-				regiao = Regiao(nome=nomeDaRegiao)
+		# 	try:
+		# 		regiao = Regiao(nome=nomeDaRegiao)
 
-				regiao_pai = Regiao.objects.filter(nome=regiao_pai_nome).first()
+		# 		regiao_pai = Regiao.objects.filter(nome=regiao_pai_nome).first()
 
-				regiao.save()
-				criado_por = "Criado por: " + str(request.user)
-				conexao = ConexaoRegiao(nome=criado_por, reg1=regiao_pai ,reg2=regiao)
+		# 		regiao.save()
+		# 		criado_por = "Criado por: " + str(request.user)
+		# 		conexao = ConexaoRegiao(nome=criado_por, reg1=regiao_pai ,reg2=regiao)
 
-				conexao.save()
+		# 		conexao.save()
 			
-			except Exception as e:
-				raise
+		# 	except Exception as e:
+		# 		raise
 
 		else:
 			return HttpResponseRedirect("/fabrica")
