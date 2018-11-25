@@ -20,10 +20,11 @@ class Index(View):
 
 		if request.user.is_authenticated:
 			user = UserProfile.objects.filter(nome=request.user) 
+			
+			values['usuario'] = user
 		else:
 			user = None
 
-		values['usuario'] = user
 
 		return render(
 		request,
@@ -35,13 +36,19 @@ class Index(View):
 
 	def post(self, request):
 
+		if request.user.is_authenticated:
+			user = UserProfile.objects.filter(nome=request.user) 
+		else:
+			return HttpResponseRedirect("/contato")
+			
+
 		motivo = request.POST.get('motivo', False)
 		texto_enviado_pelo_user = request.POST.get('texto_enviado_pelo_user', False)
 
-		print("email----------")
-		print(email)
-		print(motivo)
-		print(texto_enviado_pelo_user)
+		# print("email----------")
+		# print(email)
+		# print(motivo)
+		# print(texto_enviado_pelo_user)
 
 		if texto_enviado_pelo_user == False or texto_enviado_pelo_user == "" or motivo == False:
 			return HttpResponseRedirect("/contato")
@@ -61,7 +68,7 @@ class Index(View):
 			msg = MSG_PARA_SYST(tipo_mensagem=motivo, user=request.user, texto=texto_enviado_pelo_user)
 			msg.save()
 
-		return HttpResponseRedirect("/")
+		return HttpResponseRedirect("/contato")
 
 		
 		

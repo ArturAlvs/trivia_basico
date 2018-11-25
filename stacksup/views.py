@@ -506,7 +506,7 @@ class PartidaQuestaoView(View):
 					
 
 					# respondeu a 15 e acertou
-					if retornao[1] == 15:
+					if retornao[1] == 16:
 						
 							
 						partida.aberta = False
