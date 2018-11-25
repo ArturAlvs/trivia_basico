@@ -308,9 +308,9 @@
 
   			<li class="list-group-item">
   				{% if log.aberta %}
-  					<a href="/partida/{{log.id}}">{{ log }}</a>
+  					<a href="/partida/{{log.id}}">Partida: {{ log.id }}</a>
   				{% else %}
-  					{{ log }}
+  					Partida: {{ log.id }}
   				{% endif %}
   			</li>
 
